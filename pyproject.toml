@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "all-in-run"
+version = "0.1.0"
+description = "Application de génération de plans d'entraînement pour coureurs"
+authors = ["alarboulletmarin <andrea.larboullet---marin@etu.unice.fr>"]
+readme = "README.md"
+license = "MIT"
+packages = [{include = "all_in_run"}]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+streamlit = "^1.28.0"
+ics = "^0.7.2"
+reportlab = "^4.0.0"
+plotly = "^5.18.0"
+pandas = "^2.1.0"
+numpy = "^1.24.0"
+pillow = "^10.0.0"
+pytz = "^2023.3"
+python-dateutil = "^2.8.2"
+setuptools = "^75.8.2"
+transformers = "^4.49.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.9.1"
+isort = "^5.12.0"
+mypy = "^1.5.1"
+flake8 = "^6.1.0"
+pytest-cov = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.py$'
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[[tool.mypy.overrides]]
+module = ["ics.*", "reportlab.*", "plotly.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
