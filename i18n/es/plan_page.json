@@ -1,0 +1,52 @@
+{
+  "plan_view_title": "Votre plan d'entraînement",
+  "plan_summary": "Résumé du plan",
+  "start_date": "Date de début",
+  "race_date": "Date de course",
+  "race_type": "Type de course",
+  "total_weeks": "Nombre de semaines",
+  "sessions_per_week": "Séances par semaine",
+  "total_sessions": "Séances totales",
+  "total_volume": "Volume total",
+  "total_duration": "Durée totale",
+
+  "calendar": "Calendrier",
+  "statistics": "Statistiques",
+  "export": "Export",
+  "export_import": "Export/Import",
+
+  "download_ics": "Télécharger ICS (Calendrier)",
+  "download_pdf": "Télécharger PDF",
+  "download_json": "Télécharger JSON",
+  "download_csv": "Télécharger CSV",
+
+  "export_ics": "Exporter au format ICS",
+  "export_pdf": "Exporter au format PDF",
+  "export_json": "Exporter au format JSON",
+
+  "import_plan": "Importer un plan",
+  "upload_json": "Déposer un fichier JSON",
+  "import_help": "Importez un plan précédemment exporté au format JSON",
+  "import_success": "Plan importé avec succès",
+  "import_error": "Erreur lors de l'importation du plan",
+
+  "adjust_plan": "Ajuster le plan",
+  "adjust_to_current_date": "Ajuster à la date actuelle",
+  "adjust_success": "Plan ajusté avec succès",
+  "adjust_error": "Erreur lors de l'ajustement du plan",
+
+  "no_user_data": "Aucune donnée utilisateur disponible. Veuillez d'abord créer un plan.",
+  "back_to_input": "Retour à la saisie des données",
+
+  "generating_plan": "Génération du plan en cours...",
+  "plan_generated": "Plan généré avec succès",
+  "plan_generation_error": "Erreur lors de la génération du plan",
+
+  "week": "Semaine",
+  "date": "Date",
+  "type": "Type",
+  "phase": "Phase",
+  "distance": "Distance",
+  "duration": "Durée",
+  "description": "Description"
+}

@@ -1,0 +1,23 @@
+{
+  "previous_week": "Semaine précédente",
+  "next_week": "Semaine suivante",
+  "week": "Semaine",
+
+  "weekly_volume": "Volume hebdomadaire",
+  "weekly_duration": "Durée hebdomadaire",
+  "session_types": "Types de séances",
+  "average_intensity": "Intensité moyenne",
+
+  "distance": "Distance",
+  "duration": "Durée",
+  "average_pace": "Allure moyenne",
+  "description": "Description",
+  "session_blocks": "Blocs de la séance",
+  "pace": "Allure",
+
+  "rest_day_description": "Journée de repos. Profitez-en pour récupérer et préparer vos prochaines séances.",
+
+  "training_phases": "Phases d'entraînement",
+  "phase": "Phase",
+  "date": "Date"
+}

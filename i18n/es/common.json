@@ -1,0 +1,52 @@
+{
+  "app_title": "All-in-Run",
+  "app_subtitle": "Générez votre plan d'entraînement personnalisé",
+  "back": "Retour",
+  "next": "Suivant",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "generate": "Générer",
+  "export": "Exporter",
+  "import": "Importer",
+
+  "monday": "Lundi",
+  "tuesday": "Mardi",
+  "wednesday": "Mercredi",
+  "thursday": "Jeudi",
+  "friday": "Vendredi",
+  "saturday": "Samedi",
+  "sunday": "Dimanche",
+
+  "january": "Janvier",
+  "february": "Février",
+  "march": "Mars",
+  "april": "Avril",
+  "may": "Mai",
+  "june": "Juin",
+  "july": "Juillet",
+  "august": "Août",
+  "september": "Septembre",
+  "october": "Octobre",
+  "november": "Novembre",
+  "december": "Décembre",
+
+  "hours": "Heures",
+  "minutes": "Minutes",
+  "seconds": "Secondes",
+
+  "yes": "Oui",
+  "no": "Non",
+
+  "page_not_found": "Page non trouvée",
+  "no_data_available": "Aucune donnée disponible",
+
+  "kilometer": "kilomètre",
+  "kilometers": "kilomètres",
+  "km": "km",
+  "min_per_km": "min/km",
+
+  "week": "Semaine",
+  "weeks": "Semaines",
+  "day": "Jour",
+  "days": "Jours"
+}
