@@ -22,7 +22,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
-from transformers import pipeline
 
 from models.plan import TrainingPlan
 from models.session import Session, SessionType, TrainingPhase
