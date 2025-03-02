@@ -230,33 +230,27 @@ def render_weekly_summary(
             intensity_percent = min(100, int(avg_intensity * 33))
 
     # Afficher les statistiques dans une mise en page responsive
-    st.markdown(f"""
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-label">{_('weekly_volume', 'calendar')}</div>
-            <div class="stat-value">{volume} km</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-label">{_('weekly_duration', 'calendar')}</div>
-            <div class="stat-value">{format_timedelta(duration, 'hms_text')}</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-label">{_('session_types', 'calendar')}</div>
-            <div class="session-types">
-                {' '.join(f'<div class="session-type">{type_name}: {count}</div>' for type_name, count in session_types.items())}
-            </div>
-            
-            <div class="intensity-container">
-                <div class="stat-label">{_('average_intensity', 'calendar')}</div>
-                <div class="intensity-bar">
-                    <div class="intensity-fill" style="width: {intensity_percent}%"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            label=_('weekly_volume', 'calendar'),
+            value=f"{volume} km"
+        )
+
+    with col2:
+        st.metric(
+            label=_('weekly_duration', 'calendar'),
+            value=format_timedelta(duration, 'hms_text')
+        )
+
+    with col3:
+        st.markdown(f"**{_('session_types', 'calendar')}**")
+        for type_name, count in session_types.items():
+            st.markdown(f"- {type_name}: {count}")
+
+        st.markdown(f"**{_('average_intensity', 'calendar')}**")
+        st.progress(intensity_percent/100)  # Utilise le composant de barre de progression natif
 
 
 def render_session_card(
