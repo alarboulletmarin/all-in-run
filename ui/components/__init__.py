@@ -17,7 +17,6 @@ from .calendar import (
     render_weekly_summary,
     render_week_calendar,
     render_session_card,
-    render_month_calendar,
     render_session_details,
     render_phase_timeline
 )
@@ -48,7 +47,6 @@ __all__ = [
     'render_weekly_summary',
     'render_week_calendar',
     'render_session_card',
-    'render_month_calendar',
     'render_session_details',
     'render_phase_timeline',
 
