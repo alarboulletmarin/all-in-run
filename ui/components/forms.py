@@ -3,14 +3,13 @@ Composants de formulaire réutilisables pour l'interface utilisateur.
 """
 import streamlit as st
 from datetime import date, timedelta
-from typing import Dict, Any, List, Optional, Tuple, Callable
+from typing import Dict, Any, Optional, Tuple, Callable
 
 from utils.date_utils import get_next_monday, get_sunday
-from utils.time_converter import parse_pace_string, parse_time_string, format_timedelta, format_pace
-from utils.i18n import _
+from utils.time_converter import parse_pace_string, format_timedelta, format_pace
+from utils.i18n import _ as translate
 from models.course import RaceType
 from config.constants import (
-    MIN_WEEKS_BEFORE_RACE,
     MIN_SESSIONS_PER_WEEK,
     MAX_SESSIONS_PER_WEEK,
     DEFAULT_MIN_VOLUME,
@@ -76,11 +75,11 @@ def render_date_selector(
     # Vérifier le jour de la semaine si nécessaire
     if required_weekday is not None and selected_date.weekday() != required_weekday:
         weekday_names = {
-            0: _("monday", "common"),
-            6: _("sunday", "common")
+            0: translate("monday", "common"),
+            6: translate("sunday", "common")
         }
 
-        message = _("date_needs_to_be_weekday", "forms").format(
+        message = translate("date_needs_to_be_weekday", "forms").format(
             weekday=weekday_names.get(required_weekday, str(required_weekday))
         )
 
@@ -140,7 +139,7 @@ def render_pace_input(
         label=label,
         value=default_value,
         key=key,
-        help=help_text or _("pace_format_help", "forms"),
+        help=help_text or translate("pace_format_help", "forms"),
         placeholder="mm:ss"
     )
 
@@ -149,7 +148,7 @@ def render_pace_input(
 
     # Afficher un message d'erreur si l'allure est invalide
     if pace_str and pace is None:
-        st.error(_("invalid_pace_format", "forms"))
+        st.error(translate("invalid_pace_format", "forms"))
 
     return pace
 
@@ -182,7 +181,7 @@ def render_time_input(
 
     with col1:
         hours = st.number_input(
-            _("hours", "common"),
+            translate("hours", "common"),
             min_value=0,
             max_value=24,
             value=default_hours,
@@ -191,7 +190,7 @@ def render_time_input(
 
     with col2:
         minutes = st.number_input(
-            _("minutes", "common"),
+            translate("minutes", "common"),
             min_value=0,
             max_value=59,
             value=default_minutes,
@@ -200,7 +199,7 @@ def render_time_input(
 
     with col3:
         seconds = st.number_input(
-            _("seconds", "common"),
+            translate("seconds", "common"),
             min_value=0,
             max_value=59,
             value=default_seconds,
@@ -242,7 +241,7 @@ def render_race_type_selector(
         RaceType.OTHER.value
     ]
 
-    translated_types = [_(rt, "race_types") for rt in race_types]
+    translated_types = [translate(rt, "race_types") for rt in race_types]
 
     # Trouver l'index de la valeur par défaut
     try:
@@ -254,7 +253,7 @@ def render_race_type_selector(
         label=label,
         options=race_types,
         index=default_index,
-        format_func=lambda x: _(x, "race_types"),
+        format_func=lambda x: translate(x, "race_types"),
         key=key,
         on_change=on_change
     )
@@ -346,7 +345,7 @@ def render_volume_inputs(
 
     # Vérifier que max > min
     if max_volume <= min_volume:
-        st.warning(_("volume_max_greater_than_min", "forms"))
+        st.warning(translate("volume_max_greater_than_min", "forms"))
 
     return min_volume, max_volume
 
@@ -370,19 +369,19 @@ def render_intermediate_race_form(
     if default_values is None:
         default_values = {}
 
-    with st.expander(f"{_('intermediate_race', 'forms')} {index + 1}", expanded=True):
+    with st.expander(f"{translate('intermediate_race', 'forms')} {index + 1}", expanded=True):
         # Paramètres modifiables
         race_date = render_date_selector(
-            label=_("race_date", "forms"),
+            label=translate("race_date", "forms"),
             key=f"intermediate_race_{index}_date",
             default_value=default_values.get("race_date", date.today() + timedelta(days=30)),
             required_weekday=6,  # Dimanche
-            help_text=_("intermediate_race_date_help", "forms"),
+            help_text=translate("intermediate_race_date_help", "forms"),
             strict_weekday=True
         )
 
         race_type = render_race_type_selector(
-            label=_("race_type", "forms"),
+            label=translate("race_type", "forms"),
             key=f"intermediate_race_{index}_type",
             default_value=default_values.get("race_type", RaceType.TEN_K.value)
         )
@@ -391,7 +390,7 @@ def render_intermediate_race_form(
         distance = None
         if race_type == RaceType.OTHER.value:
             distance = st.number_input(
-                label=_("race_distance", "forms"),
+                label=translate("race_distance", "forms"),
                 min_value=1.0,
                 max_value=100.0,
                 value=default_values.get("distance", 10.0),
@@ -401,27 +400,27 @@ def render_intermediate_race_form(
 
         # Allure visée (avec options plus détaillées)
         target_pace = render_pace_input(
-            label=_("target_pace", "forms"),
+            label=translate("target_pace", "forms"),
             key=f"intermediate_race_{index}_pace",
             default_value=default_values.get("target_pace_str", "05:30")
         )
 
         # Objectif de la course
         race_objective = st.selectbox(
-            label=_("race_objective", "forms"),
+            label=translate("race_objective", "forms"),
             options=["Compétition", "Entraînement", "Test"],
             index=0,
             key=f"intermediate_race_{index}_objective"
         )
 
         # Note pour l'impact sur l'entraînement
-        st.info(_("race_impact_info", "forms"))
+        st.info(translate("race_impact_info", "forms"))
 
         col1, col2 = st.columns(2)
 
         with col1:
             # Bouton pour mettre à jour
-            if st.button(_("update_race", "forms"), key=f"update_race_{index}"):
+            if st.button(translate("update_race", "forms"), key=f"update_race_{index}"):
                 # Mettre à jour les données
                 race_data = {
                     "race_date": race_date,
@@ -432,13 +431,13 @@ def render_intermediate_race_form(
                     "objective": race_objective
                 }
                 st.session_state.intermediate_races[index] = race_data
-                st.success(_("race_updated", "forms"))
+                st.success(translate("race_updated", "forms"))
                 st.rerun()
 
         with col2:
             # Bouton de suppression
             st.button(
-                _("delete_race", "forms"),
+                translate("delete_race", "forms"),
                 key=f"delete_race_{index}",
                 on_click=on_delete,
                 args=(index,)

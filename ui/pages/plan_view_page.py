@@ -1,19 +1,19 @@
 """
 Page d'affichage du plan d'entraînement.
 """
-import streamlit as st
-from datetime import date, timedelta
-import io
 import base64
-from typing import Dict, List, Any, Optional
+
+import streamlit as st
+from datetime import date
+import io
 import pandas as pd
 
 from controllers.plan_controller import PlanController
 from models.plan import TrainingPlan
-from models.session import Session, SessionType, TrainingPhase
+from models.session import SessionType
 from utils.date_utils import format_date, get_week_number
-from utils.time_converter import format_timedelta, format_pace
-from utils.i18n import _
+from utils.time_converter import format_timedelta
+from utils.i18n import _ as translate
 from ui.components import (
     render_week_navigation,
     render_weekly_summary,
@@ -39,7 +39,7 @@ def handle_export_ics(plan_controller: PlanController):
     if ics_data:
         # Créer un lien de téléchargement
         b64 = base64.b64encode(ics_data).decode()
-        href = f'<a href="data:text/calendar;charset=utf-8;base64,{b64}" download="training_plan.ics">{_("download_ics", "plan_page")}</a>'
+        href = f'<a href="data:text/calendar;charset=utf-8;base64,{b64}" download="training_plan.ics">{translate("download_ics", "plan_page")}</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 def handle_export_tcx(plan_controller: PlanController):
@@ -54,7 +54,7 @@ def handle_export_tcx(plan_controller: PlanController):
     if tcx_data:
         # Créer un lien de téléchargement
         b64 = base64.b64encode(tcx_data).decode()
-        href = f'<a href="data:application/tcx+xml;base64,{b64}" download="training_plan_garmin.tcx">{_("download_tcx", "plan_page")}</a>'
+        href = f'<a href="data:application/tcx+xml;base64,{b64}" download="training_plan_garmin.tcx">{translate("download_tcx", "plan_page")}</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 def handle_export_pdf(plan_controller: PlanController):
@@ -69,7 +69,7 @@ def handle_export_pdf(plan_controller: PlanController):
     if pdf_data:
         # Créer un lien de téléchargement
         b64 = base64.b64encode(pdf_data).decode()
-        href = f'<a href="data:application/pdf;base64,{b64}" download="training_plan.pdf">{_("download_pdf", "plan_page")}</a>'
+        href = f'<a href="data:application/pdf;base64,{b64}" download="training_plan.pdf">{translate("download_pdf", "plan_page")}</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 
@@ -85,7 +85,7 @@ def handle_export_json(plan_controller: PlanController):
     if json_data:
         # Créer un lien de téléchargement
         b64 = base64.b64encode(json_data.encode()).decode()
-        href = f'<a href="data:application/json;base64,{b64}" download="training_plan.json">{_("download_json", "plan_page")}</a>'
+        href = f'<a href="data:application/json;base64,{b64}" download="training_plan.json">{translate("download_json", "plan_page")}</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 
@@ -103,16 +103,16 @@ def handle_import_json(plan_controller: PlanController, file_data):
 
         if imported_plan:
             st.session_state["current_plan"] = imported_plan
-            st.success(_("import_success", "plan_page"))
+            st.success(translate("import_success", "plan_page"))
 
             # Passer à l'affichage du plan
             st.session_state["view_mode"] = "calendar"
             st.rerun()
         else:
-            st.error(_("import_error", "plan_page"))
+            st.error(translate("import_error", "plan_page"))
 
     except Exception as e:
-        st.error(f"{_('import_error', 'plan_page')}: {str(e)}")
+        st.error(f"{translate('import_error', 'plan_page')}: {str(e)}")
 
 
 def handle_adjust_plan(plan_controller: PlanController):
@@ -126,10 +126,10 @@ def handle_adjust_plan(plan_controller: PlanController):
 
     if adjusted_plan:
         st.session_state["current_plan"] = adjusted_plan
-        st.success(_("adjust_success", "plan_page"))
+        st.success(translate("adjust_success", "plan_page"))
         st.rerun()
     else:
-        st.error(_("adjust_error", "plan_page"))
+        st.error(translate("adjust_error", "plan_page"))
 
 
 def handle_week_change(week_num: int):
@@ -161,23 +161,23 @@ def generate_plan(plan_controller: PlanController):
     """
     # Vérifier si les données utilisateur sont présentes
     if "user_data" not in st.session_state:
-        st.error(_("no_user_data", "plan_page"))
+        st.error(translate("no_user_data", "plan_page"))
 
         # Bouton pour retourner à la page d'entrée
-        if st.button(_("back_to_input", "plan_page")):
+        if st.button(translate("back_to_input", "plan_page")):
             st.session_state["page"] = "input"
             st.rerun()
 
         return
 
-    with st.spinner(_("generating_plan", "plan_page")):
+    with st.spinner(translate("generating_plan", "plan_page")):
         try:
             # Générer le plan
             plan = plan_controller.generate_plan(st.session_state["user_data"])
 
             if plan:
                 # Afficher un message à l'utilisateur
-                st.success(_("plan_generated", "plan_page"))
+                st.success(translate("plan_generated", "plan_page"))
 
                 # Stocker le plan dans la session
                 st.session_state["current_plan"] = plan
@@ -194,7 +194,7 @@ def generate_plan(plan_controller: PlanController):
                 st.write("Plan généré et stocké dans session_state")
                 return plan
             else:
-                st.error(_("plan_generation_error", "plan_page"))
+                st.error(translate("plan_generation_error", "plan_page"))
                 return None
         except Exception as e:
             st.error(f"Erreur durant la génération du plan: {str(e)}")
@@ -207,23 +207,23 @@ def render_plan_summary(plan: TrainingPlan):
     Args:
         plan: Plan d'entraînement
     """
-    st.header(_("plan_summary", "plan_page"))
+    st.header(translate("plan_summary", "plan_page"))
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown(f"**{_('start_date', 'plan_page')}:** {format_date(plan.user_data.start_date)}")
-        st.markdown(f"**{_('race_date', 'plan_page')}:** {format_date(plan.user_data.main_race.race_date)}")
-        st.markdown(f"**{_('race_type', 'plan_page')}:** {_(plan.user_data.main_race.race_type.value, 'race_types')}")
+        st.markdown(f"**{translate('start_date', 'plan_page')}:** {format_date(plan.user_data.start_date)}")
+        st.markdown(f"**{translate('race_date', 'plan_page')}:** {format_date(plan.user_data.main_race.race_date)}")
+        st.markdown(f"**{translate('race_type', 'plan_page')}:** {translate(plan.user_data.main_race.race_type.value, 'race_types')}")
 
     with col2:
-        st.markdown(f"**{_('total_weeks', 'plan_page')}:** {plan.user_data.total_weeks}")
-        st.markdown(f"**{_('sessions_per_week', 'plan_page')}:** {plan.user_data.sessions_per_week}")
-        st.markdown(f"**{_('total_sessions', 'plan_page')}:** {len([s for s in plan.sessions.values() if s.session_type != SessionType.REST])}")
+        st.markdown(f"**{translate('total_weeks', 'plan_page')}:** {plan.user_data.total_weeks}")
+        st.markdown(f"**{translate('sessions_per_week', 'plan_page')}:** {plan.user_data.sessions_per_week}")
+        st.markdown(f"**{translate('total_sessions', 'plan_page')}:** {len([s for s in plan.sessions.values() if s.session_type != SessionType.REST])}")
 
     with col3:
-        st.markdown(f"**{_('total_volume', 'plan_page')}:** {plan.get_total_volume()} km")
-        st.markdown(f"**{_('total_duration', 'plan_page')}:** {format_timedelta(plan.get_total_duration(), 'hms_text')}")
+        st.markdown(f"**{translate('total_volume', 'plan_page')}:** {plan.get_total_volume()} km")
+        st.markdown(f"**{translate('total_duration', 'plan_page')}:** {format_timedelta(plan.get_total_duration(), 'hms_text')}")
 
         # Calculer le nombre de séances par type
         session_counts = {}
@@ -235,53 +235,53 @@ def render_plan_summary(plan: TrainingPlan):
         # Afficher le nombre de séances par type (limité aux principaux)
         for session_type in [SessionType.LONG_RUN.value, SessionType.THRESHOLD.value]:
             if session_type in session_counts:
-                st.markdown(f"**{_(session_type, 'session_types')}:** {session_counts[session_type]}")
+                st.markdown(f"**{translate(session_type, 'session_types')}:** {session_counts[session_type]}")
 
 
 def render_export_import_section(plan_controller: PlanController):
     """
     Affiche la section d'export/import du plan
     """
-    st.header(_("export_import", "plan_page"))
+    st.header(translate("export_import", "plan_page"))
 
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         # Export ICS
-        if st.button(_("export_ics", "plan_page")):
+        if st.button(translate("export_ics", "plan_page")):
             handle_export_ics(plan_controller)
 
     with col2:
         # Export PDF
-        if st.button(_("export_pdf", "plan_page")):
+        if st.button(translate("export_pdf", "plan_page")):
             handle_export_pdf(plan_controller)
 
     with col3:
         # Export JSON
-        if st.button(_("export_json", "plan_page")):
+        if st.button(translate("export_json", "plan_page")):
             handle_export_json(plan_controller)
 
     with col4:
         # Export TCX (pour Garmin)
-        if st.button(_("export_tcx", "plan_page")):
+        if st.button(translate("export_tcx", "plan_page")):
             handle_export_tcx(plan_controller)
 
     # Import JSON
-    st.subheader(_("import_plan", "plan_page"))
+    st.subheader(translate("import_plan", "plan_page"))
 
     uploaded_file = st.file_uploader(
-        _("upload_json", "plan_page"),
+        translate("upload_json", "plan_page"),
         type=["json"],
-        help=_("import_help", "plan_page")
+        help=translate("import_help", "plan_page")
     )
 
     if uploaded_file is not None:
         handle_import_json(plan_controller, uploaded_file)
 
     # Ajustement du plan
-    st.subheader(_("adjust_plan", "plan_page"))
+    st.subheader(translate("adjust_plan", "plan_page"))
 
-    if st.button(_("adjust_to_current_date", "plan_page")):
+    if st.button(translate("adjust_to_current_date", "plan_page")):
         handle_adjust_plan(plan_controller)
 
 
@@ -319,7 +319,7 @@ def render_statistics_view(plan: TrainingPlan):
     Args:
         plan: Plan d'entraînement
     """
-    st.header(_("plan_statistics", "plan_page"))
+    st.header(translate("plan_statistics", "plan_page"))
 
     # Timeline des phases
     render_phase_timeline(plan)
@@ -343,7 +343,7 @@ def render_export_view(plan: TrainingPlan):
     Args:
         plan: Plan d'entraînement
     """
-    st.header(_("export_view", "plan_page"))
+    st.header(translate("export_view", "plan_page"))
 
     # Générer un DataFrame pour l'affichage tabulaire
     data = []
@@ -357,13 +357,13 @@ def render_export_view(plan: TrainingPlan):
 
         # Créer une ligne pour le DataFrame
         row = {
-            _("week", "plan_page"): week_num,
-            _("date", "plan_page"): format_date(session_date),
-            _("type", "plan_page"): _(session.session_type.value, "session_types"),
-            _("phase", "plan_page"): _(session.phase.value, "phases"),
-            _("distance", "plan_page"): f"{session.total_distance} km",
-            _("duration", "plan_page"): format_timedelta(session.total_duration, "hms_text"),
-            _("description", "plan_page"): session.description
+            translate("week", "plan_page"): week_num,
+            translate("date", "plan_page"): format_date(session_date),
+            translate("type", "plan_page"): translate(session.session_type.value, "session_types"),
+            translate("phase", "plan_page"): translate(session.phase.value, "phases"),
+            translate("distance", "plan_page"): f"{session.total_distance} km",
+            translate("duration", "plan_page"): format_timedelta(session.total_duration, "hms_text"),
+            translate("description", "plan_page"): session.description
         }
 
         data.append(row)
@@ -382,7 +382,7 @@ def render_export_view(plan: TrainingPlan):
     if data:
         csv = df.to_csv(index=False).encode("utf-8")
         st.download_button(
-            label=_("download_csv", "plan_page"),
+            label=translate("download_csv", "plan_page"),
             data=csv,
             file_name="training_plan.csv",
             mime="text/csv"
@@ -396,7 +396,7 @@ def render_plan_view_page(plan_controller: PlanController):
     Args:
         plan_controller: Contrôleur du plan d'entraînement
     """
-    st.title(_("plan_view_title", "plan_page"))
+    st.title(translate("plan_view_title", "plan_page"))
 
     # Vérifier si un plan existe ou doit être généré
     current_plan = st.session_state.get("current_plan")
@@ -418,10 +418,10 @@ def render_plan_view_page(plan_controller: PlanController):
 
     # Tabs pour les différentes vues
     tab1, tab2, tab3, tab4 = st.tabs([
-        _("calendar", "plan_page"),
-        _("statistics", "plan_page"),
-        _("export", "plan_page"),
-        _("export_import", "plan_page")
+        translate("calendar", "plan_page"),
+        translate("statistics", "plan_page"),
+        translate("export", "plan_page"),
+        translate("export_import", "plan_page")
     ])
 
     with tab1:
@@ -443,6 +443,6 @@ def render_plan_view_page(plan_controller: PlanController):
     # Bouton pour revenir à la page d'entrée
     st.divider()
 
-    if st.button(_("back_to_input", "plan_page")):
+    if st.button(translate("back_to_input", "plan_page")):
         st.session_state["page"] = "input"
         st.rerun()

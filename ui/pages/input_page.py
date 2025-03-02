@@ -8,7 +8,7 @@ from controllers.input_controller import InputController
 from models.course import RaceType
 from utils.date_utils import get_next_monday, get_sunday
 from utils.time_converter import format_pace
-from utils.i18n import _
+from utils.i18n import _ as translate
 from config.constants import (
     MIN_WEEKS_BEFORE_RACE,
     DEFAULT_MIN_VOLUME,
@@ -33,7 +33,7 @@ def render_input_form(input_controller: InputController):
     Args:
         input_controller: Contrôleur de saisie
     """
-    st.title(_("create_plan_title", "input_page"))
+    st.title(translate("create_plan_title", "input_page"))
 
     # Charger les entrées précédentes si disponibles
     saved_input = input_controller.load_input()
@@ -44,22 +44,22 @@ def render_input_form(input_controller: InputController):
 
     # Utiliser une mise en page en onglets pour organiser le contenu
     tab_main, tab_paces, tab_intermediate = st.tabs([
-        _("main_info", "input_page"),
-        _("paces_settings", "input_page"),
-        _("intermediate_races", "input_page")
+        translate("main_info", "input_page"),
+        translate("paces_settings", "input_page"),
+        translate("intermediate_races", "input_page")
     ])
 
     # Onglet 1: Informations principales
     with tab_main:
         with st.form(key="main_form"):
-            st.subheader(_("race_info", "input_page"))
+            st.subheader(translate("race_info", "input_page"))
 
             # Utiliser des colonnes responsives pour les informations de base
             col1, col2 = responsive_columns([1, 1])
 
             with col1:
                 race_type = render_race_type_selector(
-                    label=_("race_type", "input_page"),
+                    label=translate("race_type", "input_page"),
                     key="race_type",
                     default_value=saved_input.get("race_type", RaceType.TEN_K.value)
                 )
@@ -70,22 +70,22 @@ def render_input_form(input_controller: InputController):
 
                 if race_type == RaceType.OTHER.value:
                     distance = st.number_input(
-                        label=_("race_distance", "input_page"),
+                        label=translate("race_distance", "input_page"),
                         min_value=1.0,
                         max_value=100.0,
                         value=saved_input.get("distance", 10.0),
                         step=0.1,
                         key="distance",
-                        help=_("race_distance_help", "input_page")
+                        help=translate("race_distance_help", "input_page")
                     )
 
                     target_time = render_time_input(
-                        label=_("race_target_time", "input_page"),
+                        label=translate("race_target_time", "input_page"),
                         key="target_time",
                         default_hours=saved_input.get("target_time_hours", 0),
                         default_minutes=saved_input.get("target_time_minutes", 45),
                         default_seconds=saved_input.get("target_time_seconds", 0),
-                        help=_("target_time_help", "input_page")
+                        help=translate("target_time_help", "input_page")
                     )
 
             with col2:
@@ -96,24 +96,24 @@ def render_input_form(input_controller: InputController):
                 min_date_info = st.empty()
 
                 start_date = render_date_selector(
-                    label=_("start_date", "input_page"),
+                    label=translate("start_date", "input_page"),
                     key="start_date",
                     default_value=saved_input.get("start_date", get_next_monday(today)),
                     min_value=today,
                     required_weekday=0,  # Lundi
-                    help_text=_("start_date_help", "input_page"),
+                    help_text=translate("start_date_help", "input_page"),
                     strict_weekday=True
                 )
 
                 min_race_date = start_date + timedelta(days=MIN_WEEKS_BEFORE_RACE * 7)
 
                 race_date = render_date_selector(
-                    label=_("race_date", "input_page"),
+                    label=translate("race_date", "input_page"),
                     key="race_date",
                     default_value=saved_input.get("race_date", get_sunday(min_race_date)),
                     min_value=min_race_date,
                     required_weekday=6,  # Dimanche
-                    help_text=_("race_date_help", "input_page"),
+                    help_text=translate("race_date_help", "input_page"),
                     strict_weekday=True
                 )
 
@@ -123,44 +123,44 @@ def render_input_form(input_controller: InputController):
 
                 if weeks_diff < MIN_WEEKS_BEFORE_RACE:
                     min_date_info.warning(
-                        _("min_weeks_warning", "input_page").format(
+                        translate("min_weeks_warning", "input_page").format(
                             weeks=MIN_WEEKS_BEFORE_RACE
                         )
                     )
                 else:
                     min_date_info.success(
-                        _("plan_duration", "input_page").format(
+                        translate("plan_duration", "input_page").format(
                             weeks=weeks_diff
                         )
                     )
 
-            st.subheader(_("training_params", "input_page"))
+            st.subheader(translate("training_params", "input_page"))
 
             col1, col2 = responsive_columns([1, 1])
 
             with col1:
                 sessions = render_sessions_per_week_selector(
-                    label=_("sessions_per_week", "input_page"),
+                    label=translate("sessions_per_week", "input_page"),
                     key="sessions_per_week",
                     default_value=saved_input.get("sessions_per_week", DEFAULT_SESSIONS_PER_WEEK),
-                    help_text=_("sessions_per_week_help", "input_page")
+                    help_text=translate("sessions_per_week_help", "input_page")
                 )
 
             with col2:
                 min_volume, max_volume = render_volume_inputs(
-                    min_label=_("min_volume", "input_page"),
-                    max_label=_("max_volume", "input_page"),
+                    min_label=translate("min_volume", "input_page"),
+                    max_label=translate("max_volume", "input_page"),
                     min_key="min_volume",
                     max_key="max_volume",
                     default_min=saved_input.get("min_volume", DEFAULT_MIN_VOLUME),
                     default_max=saved_input.get("max_volume", DEFAULT_MAX_VOLUME),
-                    help_text=_("volume_help", "input_page")
+                    help_text=translate("volume_help", "input_page")
                 )
 
             # Bouton de soumission principal en bas du formulaire
-            st.markdown("### " + _("create_plan", "input_page"))
+            st.markdown("### " + translate("create_plan", "input_page"))
             submit_button = st.form_submit_button(
-                _("generate_plan", "input_page"),
+                translate("generate_plan", "input_page"),
                 use_container_width=True,
                 type="primary"
             )
@@ -168,36 +168,36 @@ def render_input_form(input_controller: InputController):
     # Onglet 2: Allures
     with tab_paces:
         with st.form(key="paces_form"):
-            st.subheader(_("user_paces", "input_page"))
+            st.subheader(translate("user_paces", "input_page"))
 
             # Afficher un cadre explicatif sur les allures
-            st.info(_("paces_explanation", "input_page") or "Les allures doivent respecter l'ordre: 5K < 10K < Semi < Marathon (plus la distance est longue, plus l'allure est lente).")
+            st.info(translate("paces_explanation", "input_page") or "Les allures doivent respecter l'ordre: 5K < 10K < Semi < Marathon (plus la distance est longue, plus l'allure est lente).")
 
             # Organiser les allures en deux colonnes
             col1, col2 = responsive_columns([1, 1])
 
             with col1:
                 pace_5k = render_pace_input(
-                    label=_("pace_5k", "input_page"),
+                    label=translate("pace_5k", "input_page"),
                     key="pace_5k",
                     default_value=saved_input.get("pace_5k_str", "04:30")
                 )
 
                 pace_half = render_pace_input(
-                    label=_("pace_half", "input_page"),
+                    label=translate("pace_half", "input_page"),
                     key="pace_half",
                     default_value=saved_input.get("pace_half_str", "05:00")
                 )
 
             with col2:
                 pace_10k = render_pace_input(
-                    label=_("pace_10k", "input_page"),
+                    label=translate("pace_10k", "input_page"),
                     key="pace_10k",
                     default_value=saved_input.get("pace_10k_str", "04:45")
                 )
 
                 pace_marathon = render_pace_input(
-                    label=_("pace_marathon", "input_page"),
+                    label=translate("pace_marathon", "input_page"),
                     key="pace_marathon",
                     default_value=saved_input.get("pace_marathon_str", "05:30")
                 )
@@ -205,29 +205,29 @@ def render_input_form(input_controller: InputController):
             # Vérifier l'ordre des allures
             if all([pace_5k, pace_10k, pace_half, pace_marathon]):
                 if not (pace_5k < pace_10k < pace_half < pace_marathon):
-                    st.warning(_("pace_order_warning", "input_page"))
+                    st.warning(translate("pace_order_warning", "input_page"))
                 else:
-                    st.success(_("paces_valid", "input_page") or "Vos allures sont cohérentes.")
+                    st.success(translate("paces_valid", "input_page") or "Vos allures sont cohérentes.")
 
             # Bouton secondaire pour sauvegarder uniquement les allures
             save_paces = st.form_submit_button(
-                _("save_paces", "input_page") or "Enregistrer mes allures",
+                translate("save_paces", "input_page") or "Enregistrer mes allures",
                 use_container_width=True
             )
 
     # Onglet 3: Courses intermédiaires
     with tab_intermediate:
-        st.subheader(_("intermediate_races", "input_page"))
+        st.subheader(translate("intermediate_races", "input_page"))
 
         # Section interactive avec les courses existantes
         if st.session_state.intermediate_races:
-            st.write(_("existing_races", "input_page") or "Courses intermédiaires configurées:")
+            st.write(translate("existing_races", "input_page") or "Courses intermédiaires configurées:")
 
             # Afficher les courses intermédiaires existantes dans une grille
             for i, race in enumerate(st.session_state.intermediate_races):
                 # Utiliser des cartes pour chaque course
                 card(
-                    title=f"{_('intermediate_race', 'forms')} {i + 1}: {race.get('race_date', date.today())}",
+                    title=f"{translate('intermediate_race', 'forms')} {i + 1}: {race.get('race_date', date.today())}",
                     content=f"""
                     **Type**: {race.get('race_type', RaceType.TEN_K.value)}  
                     **Date**: {race.get('race_date', date.today())}  
@@ -236,7 +236,7 @@ def render_input_form(input_controller: InputController):
                     footer=f"""
                     <button kind="secondary" 
                     onclick="document.getElementById('delete_race_{i}').click()">
-                    {_('delete_race', 'forms')}
+                    {translate('delete_race', 'forms')}
                     </button>
                     """,
                     is_expanded=True
@@ -247,10 +247,10 @@ def render_input_form(input_controller: InputController):
                     st.session_state.intermediate_races.pop(i)
                     st.rerun()
         else:
-            st.info(_("no_intermediate_races", "input_page") or "Aucune course intermédiaire n'a été ajoutée.")
+            st.info(translate("no_intermediate_races", "input_page") or "Aucune course intermédiaire n'a été ajoutée.")
 
         # Interface d'ajout de course
-        with st.expander(_("add_new_race", "input_page") or "Ajouter une nouvelle course intermédiaire", expanded=not st.session_state.intermediate_races):
+        with st.expander(translate("add_new_race", "input_page") or "Ajouter une nouvelle course intermédiaire", expanded=not st.session_state.intermediate_races):
             # Déterminer la date par défaut pour la nouvelle course
             if st.session_state.get("start_date") and st.session_state.get("race_date"):
                 # Placer par défaut à mi-chemin entre début et course principale
@@ -267,15 +267,15 @@ def render_input_form(input_controller: InputController):
 
             with col1:
                 new_race_date = render_date_selector(
-                    label=_("race_date", "forms"),
+                    label=translate("race_date", "forms"),
                     key="new_intermediate_race_date",
                     default_value=default_date,
                     required_weekday=6,  # Dimanche
-                    help_text=_("intermediate_race_date_help", "forms")
+                    help_text=translate("intermediate_race_date_help", "forms")
                 )
 
                 new_race_type = render_race_type_selector(
-                    label=_("race_type", "forms"),
+                    label=translate("race_type", "forms"),
                     key="new_intermediate_race_type",
                     default_value=RaceType.TEN_K.value
                 )
@@ -285,7 +285,7 @@ def render_input_form(input_controller: InputController):
                 new_race_distance = None
                 if new_race_type == RaceType.OTHER.value:
                     new_race_distance = st.number_input(
-                        label=_("race_distance", "forms"),
+                        label=translate("race_distance", "forms"),
                         min_value=1.0,
                         max_value=100.0,
                         value=10.0,
@@ -295,21 +295,21 @@ def render_input_form(input_controller: InputController):
 
                 # Allure visée
                 new_race_pace = render_pace_input(
-                    label=_("target_pace", "forms"),
+                    label=translate("target_pace", "forms"),
                     key="new_intermediate_race_pace",
                     default_value="05:30"
                 )
 
             # Objectif de la course
             new_race_objective = st.selectbox(
-                label=_("race_objective", "forms"),
+                label=translate("race_objective", "forms"),
                 options=["Compétition", "Entraînement", "Test"],
                 index=0,
                 key="new_intermediate_race_objective"
             )
 
             # Bouton pour ajouter la course
-            if st.button(_("add_intermediate_race", "input_page"), use_container_width=True):
+            if st.button(translate("add_intermediate_race", "input_page"), use_container_width=True):
                 # Créer la nouvelle course
                 new_race = {
                     "race_date": new_race_date,
@@ -322,7 +322,7 @@ def render_input_form(input_controller: InputController):
 
                 # Ajouter à la liste des courses intermédiaires
                 st.session_state.intermediate_races.append(new_race)
-                st.success(_("race_added", "forms") or "Course intermédiaire ajoutée avec succès.")
+                st.success(translate("race_added", "forms") or "Course intermédiaire ajoutée avec succès.")
                 st.rerun()
 
     # Traitement du formulaire après soumission
@@ -378,7 +378,7 @@ def render_input_form(input_controller: InputController):
             st.session_state["user_data"] = user_data
 
             # Afficher un message de succès avant de rediriger
-            st.success(_("plan_generation_success", "input_page") or "Plan d'entraînement généré avec succès!")
+            st.success(translate("plan_generation_success", "input_page") or "Plan d'entraînement généré avec succès!")
 
             # Passer à la page du plan
             st.session_state["page"] = "plan_view"
@@ -419,4 +419,4 @@ def render_input_form(input_controller: InputController):
             # Sauvegarder
             input_controller.save_input(existing_data)
 
-            st.success(_("paces_saved", "input_page") or "Vos allures ont été enregistrées avec succès.")
+            st.success(translate("paces_saved", "input_page") or "Vos allures ont été enregistrées avec succès.")

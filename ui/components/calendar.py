@@ -9,7 +9,7 @@ from models.plan import TrainingPlan
 from models.session import Session, SessionType, TrainingPhase
 from utils.date_utils import format_date, get_week_number
 from utils.time_converter import format_timedelta, format_pace, format_duration_for_calendar
-from utils.i18n import _
+from utils.i18n import _ as translate
 from config.languages import DAYS_TRANSLATIONS, SESSION_TYPE_TRANSLATIONS
 
 
@@ -76,7 +76,7 @@ def render_week_navigation(
     with col1:
         if current_week > 0:
             st.button(
-                "◀ " + _("previous_week", "calendar"),
+                "◀ " + translate("previous_week", "calendar"),
                 key="prev_week",
                 on_click=on_week_change,
                 args=(current_week - 1,),
@@ -96,7 +96,7 @@ def render_week_navigation(
                 phase = day_phase
                 break
 
-        phase_str = _(phase.value, "phases") if phase else ""
+        phase_str = translate(phase.value, "phases") if phase else ""
 
         # Calculer le pourcentage de progression
         progress_percent = min(100, int((current_week + 1) / total_weeks * 100))
@@ -105,7 +105,7 @@ def render_week_navigation(
         st.markdown(f"""
         <div class="week-nav">
             <div class="week-nav-title">
-                <h3 style="margin: 0;">{_('week', 'calendar')} {current_week + 1}/{total_weeks} - {phase_str}</h3>
+                <h3 style="margin: 0;">{translate('week', 'calendar')} {current_week + 1}/{total_weeks} - {phase_str}</h3>
                 <div class="week-nav-dates">{format_date(week_start, include_day_name=False)} - {format_date(week_end, include_day_name=False)}</div>
                 <div class="week-progress">
                     <div class="week-progress-bar" style="width: {progress_percent}%"></div>
@@ -117,7 +117,7 @@ def render_week_navigation(
     with col3:
         if current_week < total_weeks - 1:
             st.button(
-                _("next_week", "calendar") + " ▶",
+                translate("next_week", "calendar") + " ▶",
                 key="next_week",
                 on_click=on_week_change,
                 args=(current_week + 1,),
@@ -234,22 +234,22 @@ def render_weekly_summary(
 
     with col1:
         st.metric(
-            label=_('weekly_volume', 'calendar'),
+            label=translate('weekly_volume', 'calendar'),
             value=f"{volume} km"
         )
 
     with col2:
         st.metric(
-            label=_('weekly_duration', 'calendar'),
+            label=translate('weekly_duration', 'calendar'),
             value=format_timedelta(duration, 'hms_text')
         )
 
     with col3:
-        st.markdown(f"**{_('session_types', 'calendar')}**")
+        st.markdown(f"**{translate('session_types', 'calendar')}**")
         for type_name, count in session_types.items():
             st.markdown(f"- {type_name}: {count}")
 
-        st.markdown(f"**{_('average_intensity', 'calendar')}**")
+        st.markdown(f"**{translate('average_intensity', 'calendar')}**")
         st.progress(intensity_percent/100)  # Utilise le composant de barre de progression natif
 
 
@@ -526,7 +526,7 @@ def render_session_details(
     """, unsafe_allow_html=True)
 
     if session.session_type == SessionType.REST:
-        st.info(_("rest_day_description", "calendar"))
+        st.info(translate("rest_day_description", "calendar"))
         return
 
     # Informations générales
@@ -534,13 +534,13 @@ def render_session_details(
 
     with col1:
         st.metric(
-            label=_("distance", "calendar"),
+            label=translate("distance", "calendar"),
             value=f"{session.total_distance} km"
         )
 
     with col2:
         st.metric(
-            label=_("duration", "calendar"),
+            label=translate("duration", "calendar"),
             value=format_timedelta(session.total_duration, 'hms_text')
         )
 
@@ -549,21 +549,21 @@ def render_session_details(
         if session.total_distance > 0:
             avg_pace = timedelta(seconds=session.total_duration.total_seconds() / session.total_distance)
             st.metric(
-                label=_("average_pace", "calendar"),
+                label=translate("average_pace", "calendar"),
                 value=format_pace(avg_pace)
             )
 
     # Description
     st.markdown(f"""
     <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
-        <h4 style="margin-top:0;">{_("description", "calendar")}</h4>
+        <h4 style="margin-top:0;">{translate("description", "calendar")}</h4>
         <p>{session.description}</p>
     </div>
     """, unsafe_allow_html=True)
 
     # Détail des blocs
     if session.blocks:
-        st.markdown(f"#### {_('session_blocks', 'calendar')}")
+        st.markdown(f"#### {translate('session_blocks', 'calendar')}")
 
         # CSS pour la timeline des blocs
         st.markdown("""
@@ -675,7 +675,7 @@ def render_phase_timeline(
     }
 
     for phase, stats in phase_stats.items():
-        phase_name = _(phase.value, "phases")
+        phase_name = translate(phase.value, "phases")
         phases.append(phase_name)
         start_dates.append(stats["start_date"])
         end_dates.append(stats["end_date"])
@@ -709,16 +709,16 @@ def render_phase_timeline(
     # Mettre en forme le graphique
     fig.update_layout(
         title=dict(
-            text=_("training_phases", "calendar"),
+            text=translate("training_phases", "calendar"),
             font=dict(size=20)
         ),
         xaxis=dict(
-            title=_("date", "calendar"),
+            title=translate("date", "calendar"),
             tickformat="%d %b",
             gridcolor="rgba(0,0,0,0.1)"
         ),
         yaxis=dict(
-            title=_("phase", "calendar"),
+            title=translate("phase", "calendar"),
             gridcolor="rgba(0,0,0,0.05)"
         ),
         hovermode="closest",
