@@ -1262,6 +1262,7 @@ files = [
 [package.dependencies]
 attrs = ">=22.2.0"
 rpds-py = ">=0.7.0"
+typing-extensions = {version = ">=4.4.0", markers = "python_version < \"3.13\""}
 
 [[package]]
 name = "reportlab"
@@ -1684,5 +1685,5 @@ watchmedo = ["PyYAML (>=3.10)"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.13"
-content-hash = "43d542868da9c80abec3a5c1e7a4edbfc6b745ce494cedb80d21e5a9161adad2"
+python-versions = ">=3.12,<3.14"
+content-hash = "df2f961a393669df1eb63cf3c734b684f942128152c8007de3dd674605f539f8"
