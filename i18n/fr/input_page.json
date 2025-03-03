@@ -34,5 +34,11 @@
   "delete_race": "Supprimer cette course",
   "target_pace": "Allure visée (mm:ss/km)",
 
-  "generate_plan": "Générer mon plan"
+  "generate_plan": "Générer mon plan",
+
+  "add_new_race": "Ajouter une nouvelle course intermédiaire",
+  "existing_races": "Courses intermédiaires configurées",
+  "race_added": "Course intermédiaire ajoutée avec succès",
+  "race_objective": "Objectif de la course",
+  "race_impact_info": "Les courses intermédiaires influencent votre plan d'entraînement en ajustant automatiquement le volume des semaines concernées"
 }

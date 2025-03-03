@@ -48,5 +48,16 @@
   "week": "Semaine",
   "weeks": "Semaines",
   "day": "Jour",
-  "days": "Jours"
+  "days": "Jours",
+  "race_distance": "Distance de course",
+  "race_pace": "Allure de course",
+  "select": "Sélectionner",
+  "add": "Ajouter",
+  "delete": "Supprimer",
+  "confirm": "Confirmer",
+  "generate_plan": "Générer mon plan", 
+  "create_plan" : "Créer un plan d'entraînement",
+  "view_plan" : "Voir le plan d'entraînement",
+  "simulate" : "Simuler un plan d'entraînement",
+  "app_description": "Générez votre plan d'entraînement personnalisé avec All in Run"
 }
