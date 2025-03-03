@@ -243,7 +243,7 @@ def render_input_form(input_controller: InputController):
                 )
 
                 # Bouton caché pour la suppression
-                if st.button(f"delete_race_{i}", key=f"delete_race_{i}", visible=False):
+                if st.button(f"delete_race_{i}", key=f"delete_race_{i}", disabled=False):
                     st.session_state.intermediate_races.pop(i)
                     st.rerun()
         else:
