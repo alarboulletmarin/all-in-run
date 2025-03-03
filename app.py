@@ -176,8 +176,8 @@ def setup_page_config():
 def render_sidebar():
     """Affiche le contenu de la barre latérale"""
     # Logo et titre
-    st.sidebar.image("https://via.placeholder.com/150x150?text=All-in-Run", width=130)
-    st.sidebar.title("All-in-Run 🏃")
+    # st.sidebar.image("https://via.placeholder.com/150x150?text=All-in-Run", width=130)
+    st.sidebar.title("All in Run 🏃")
 
     # Sélection de langue
     render_language_selector()
@@ -188,31 +188,31 @@ def render_sidebar():
     # Déterminer la page active
     current_page = st.session_state.get("page", "input")
 
+    # Vérifier si un plan a été généré
+    plan_exists = st.session_state.get("plan_generated", False)
+
     # Afficher les boutons de navigation
     if st.sidebar.button(
             _("create_plan", "common") or "Créer un plan",
             use_container_width=True,
-            disabled=current_page == "input",
             type="primary" if current_page == "input" else "secondary"
     ):
         st.session_state["page"] = "input"
         st.rerun()
 
-    plan_button_disabled = "current_plan" not in st.session_state
     if st.sidebar.button(
             _("view_plan", "common") or "Voir mon plan",
             use_container_width=True,
-            disabled=plan_button_disabled,
+            disabled=not plan_exists,
             type="primary" if current_page == "plan_view" else "secondary"
     ):
         st.session_state["page"] = "plan_view"
         st.rerun()
 
-    simulation_button_disabled = "current_plan" not in st.session_state
     if st.sidebar.button(
             _("simulate", "common") or "Simuler des variantes",
             use_container_width=True,
-            disabled=simulation_button_disabled,
+            disabled=not plan_exists,
             type="primary" if current_page == "simulation" else "secondary"
     ):
         st.session_state["page"] = "simulation"
@@ -234,7 +234,6 @@ def render_sidebar():
 
 def main():
     """Fonction principale de l'application"""
-    # Configurer la page
     setup_page_config()
 
     # Initialiser l'état de session

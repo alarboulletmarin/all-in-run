@@ -32,6 +32,11 @@ class PlanController:
         Returns:
             Plan d'entraînement généré
         """
+        # Vérifier si les données utilisateur ont changé pour forcer la régénération
+        force_regenerate = True
+        if self.current_plan and hasattr(self.current_plan, 'user_data'):
+            force_regenerate = not self._compare_user_data(self.current_plan.user_data, user_data)
+        
         # Générer le plan
         self.current_plan = self.plan_generator.generate_plan(user_data)
 
@@ -39,6 +44,48 @@ class PlanController:
         self._save_current_plan()
 
         return self.current_plan
+        
+    def _compare_user_data(self, old_data: UserData, new_data: UserData) -> bool:
+        """
+        Compare deux objets UserData pour déterminer s'ils sont identiques
+        
+        Args:
+            old_data: Anciennes données utilisateur
+            new_data: Nouvelles données utilisateur
+            
+        Returns:
+            True si les données sont identiques, False sinon
+        """
+        # Comparaison des attributs principaux
+        if old_data.start_date != new_data.start_date:
+            return False
+        if old_data.main_race.race_date != new_data.main_race.race_date:
+            return False
+        if old_data.main_race.race_type != new_data.main_race.race_type:
+            return False
+        if old_data.sessions_per_week != new_data.sessions_per_week:
+            return False
+        if old_data.min_volume != new_data.min_volume:
+            return False
+        if old_data.max_volume != new_data.max_volume:
+            return False
+        
+        # Comparer les allures
+        if old_data.pace_5k != new_data.pace_5k:
+            return False
+        if old_data.pace_10k != new_data.pace_10k:
+            return False
+        if old_data.pace_half_marathon != new_data.pace_half_marathon:
+            return False
+        if old_data.pace_marathon != new_data.pace_marathon:
+            return False
+            
+        # Comparer les courses intermédiaires
+        if len(old_data.intermediate_races) != len(new_data.intermediate_races):
+            return False
+        
+        # Si on arrive ici, les données sont considérées comme identiques
+        return True
 
     def load_plan(self) -> Optional[TrainingPlan]:
         """

@@ -14,6 +14,8 @@ from models.session import SessionType
 from utils.date_utils import format_date, get_week_number
 from utils.time_converter import format_timedelta
 from utils.i18n import _ as translate
+import hashlib
+import json
 from ui.components import (
     render_week_navigation,
     render_weekly_summary,
@@ -140,6 +142,9 @@ def handle_week_change(week_num: int):
         week_num: Numéro de la semaine à afficher
     """
     st.session_state["current_week"] = week_num
+    
+    # S'assurer que le plan est toujours marqué comme généré
+    st.session_state["plan_generated"] = True
 
 
 def handle_session_click(session_date: date):
@@ -159,12 +164,16 @@ def generate_plan(plan_controller: PlanController):
     Args:
         plan_controller: Contrôleur du plan d'entraînement
     """
+    # On supprime le plan actuel s'il existe
+    del st.session_state["plan_generated"]
+
     # Vérifier si les données utilisateur sont présentes
     if "user_data" not in st.session_state:
         st.error(translate("no_user_data", "plan_page"))
 
         # Bouton pour retourner à la page d'entrée
         if st.button(translate("back_to_input", "plan_page")):
+            del st.session_state["plan_generated"]
             st.session_state["page"] = "input"
             st.rerun()
 
@@ -181,6 +190,9 @@ def generate_plan(plan_controller: PlanController):
 
                 # Stocker le plan dans la session
                 st.session_state["current_plan"] = plan
+                
+                # Marquer que le plan a été généré pour activer les boutons
+                st.session_state["plan_generated"] = True
 
                 # Initialiser la semaine courante
                 if "current_week" not in st.session_state:
@@ -398,11 +410,21 @@ def render_plan_view_page(plan_controller: PlanController):
     """
     st.title(translate("plan_view_title", "plan_page"))
 
-    # Vérifier si un plan existe ou doit être généré
-    current_plan = st.session_state.get("current_plan")
-
-    if current_plan is None:
-        current_plan = plan_controller.get_current_plan()
+    # Vérifier si les données utilisateur ont été modifiées depuis la dernière génération
+    user_data_hash = None
+    if "user_data" in st.session_state:
+        # Créer un hash des données utilisateur pour détecter les changements
+        user_data_str = json.dumps(st.session_state["user_data"], sort_keys=True, default=str)
+        user_data_hash = hashlib.md5(user_data_str.encode()).hexdigest()
+    
+    # Si les données ont changé, on force la régénération
+    regenerate = False
+    if user_data_hash and st.session_state.get("last_user_data_hash") != user_data_hash:
+        regenerate = True
+        st.session_state["last_user_data_hash"] = user_data_hash
+    
+    # Récupérer le plan actuel
+    current_plan = None if regenerate else st.session_state.get("current_plan")
 
     if current_plan is None:
         # Générer le plan si les données utilisateur sont présentes
@@ -410,7 +432,14 @@ def render_plan_view_page(plan_controller: PlanController):
 
         if current_plan is None:
             # Si aucun plan n'a pu être généré, on s'arrête ici
+            st.session_state["plan_generated"] = False
             return
+    
+    # S'assurer que le plan est bien stocké en session
+    st.session_state["current_plan"] = current_plan
+    
+    # Marquer que le plan a été généré pour activer les boutons
+    st.session_state["plan_generated"] = True
 
     # À partir d'ici, on a un plan valide à afficher
     # Afficher un résumé du plan
@@ -444,5 +473,6 @@ def render_plan_view_page(plan_controller: PlanController):
     st.divider()
 
     if st.button(translate("back_to_input", "plan_page")):
+        # Ne pas supprimer plan_generated pour garder les boutons actifs
         st.session_state["page"] = "input"
         st.rerun()

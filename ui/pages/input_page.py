@@ -376,6 +376,12 @@ def render_input_form(input_controller: InputController):
 
             # Stocker les données utilisateur dans la session
             st.session_state["user_data"] = user_data
+            
+            # Marquer comme prêt pour la génération d'un nouveau plan
+            st.session_state["regenerate_plan"] = True
+            
+            # Assurer que les boutons de navigation seront activés
+            st.session_state["plan_generated"] = True
 
             # Afficher un message de succès avant de rediriger
             st.success(translate("plan_generation_success", "input_page") or "Plan d'entraînement généré avec succès!")
