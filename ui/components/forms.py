@@ -332,9 +332,9 @@ def render_volume_inputs(
     with col2:
         max_volume = st.number_input(
             label=max_label,
-            min_value=min_volume,
+            min_value=min_volume + 5.0,
             max_value=300.0,
-            value=max(default_max, min_volume),
+            value=max(default_max, min_volume + 5.0),
             step=5.0,
             format="%.1f",
             key=max_key
