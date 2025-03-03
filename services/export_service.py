@@ -113,6 +113,7 @@ class ExportService:
             calendar.events.add(event)
 
         # Convertir le calendrier en chaîne ICS
+        str(calendar)
         ics_content = calendar.serialize()
 
         # Convertir en bytes avec l'encodage UTF-8 explicite
