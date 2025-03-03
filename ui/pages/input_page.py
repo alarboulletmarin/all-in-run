@@ -6,6 +6,7 @@ from datetime import date, timedelta
 
 from controllers.input_controller import InputController
 from models.course import RaceType
+from ui.components.forms import render_date_with_weekday_constraint
 from utils.date_utils import get_next_monday, get_sunday
 from utils.time_converter import format_pace
 from utils.i18n import _ as translate
@@ -95,26 +96,24 @@ def render_input_form(input_controller: InputController):
                 # Ajouter une information visuelle sur la date minimale de course
                 min_date_info = st.empty()
 
-                start_date = render_date_selector(
+                start_date = render_date_with_weekday_constraint(
                     label=translate("start_date", "input_page"),
                     key="start_date",
+                    required_weekday=0,  # Lundi
                     default_value=saved_input.get("start_date", get_next_monday(today)),
                     min_value=today,
-                    required_weekday=0,  # Lundi
-                    help_text=translate("start_date_help", "input_page"),
-                    strict_weekday=True
+                    help_text=translate("start_date_help", "input_page")
                 )
 
                 min_race_date = start_date + timedelta(days=MIN_WEEKS_BEFORE_RACE * 7)
 
-                race_date = render_date_selector(
+                race_date = render_date_with_weekday_constraint(
                     label=translate("race_date", "input_page"),
+                    required_weekday=6,  # Dimanche
                     key="race_date",
                     default_value=saved_input.get("race_date", get_sunday(min_race_date)),
                     min_value=min_race_date,
-                    required_weekday=6,  # Dimanche
-                    help_text=translate("race_date_help", "input_page"),
-                    strict_weekday=True
+                    help_text=translate("race_date_help", "input_page")
                 )
 
                 # Vérifier l'écart entre les dates et afficher une information visuelle

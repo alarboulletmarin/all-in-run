@@ -50,15 +50,6 @@ def render_date_selector(
     if default_value is None:
         default_value = date.today()
 
-    # Si required_weekday est spécifié et strict_weekday est True,
-    # ajuster la valeur par défaut au jour de la semaine requis
-    if required_weekday is not None and strict_weekday:
-        current_weekday = default_value.weekday()
-        if current_weekday != required_weekday:
-            if required_weekday == 0:  # Lundi
-                default_value = get_next_monday(default_value)
-            elif required_weekday == 6:  # Dimanche
-                default_value = get_sunday(default_value)
 
     # Afficher le sélecteur de date
     selected_date = st.date_input(
@@ -505,3 +496,88 @@ def create_paces_summary(
     }
 
     return paces
+
+def render_date_with_weekday_constraint(
+        label: str,
+        key: str,
+        required_weekday: int,  # 0=lundi, 6=dimanche
+        default_value: date = None,
+        min_value: date = None,
+        max_value: date = None,
+        help_text: str = None
+) -> date:
+    """
+    Affiche un sélecteur de date et ajuste automatiquement la date au jour requis
+    sans modifier la session state
+    """
+    # Noms des jours de la semaine
+    weekday_names = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+    weekday_name = weekday_names[required_weekday]
+
+    # Ajuster la valeur par défaut si nécessaire
+    if default_value is None:
+        default_value = date.today()
+
+    # S'assurer que la valeur par défaut est au bon jour de la semaine
+    if default_value.weekday() != required_weekday:
+        days_to_add = (required_weekday - default_value.weekday()) % 7
+        default_value = default_value + timedelta(days=days_to_add)
+
+    # Vérifier que la valeur par défaut est entre min_value et max_value
+    if min_value is not None and default_value < min_value:
+        # Si la valeur par défaut est trop petite, utiliser min_value
+        default_value = min_value
+        # Ajuster au jour de la semaine requis si nécessaire
+        if default_value.weekday() != required_weekday:
+            days_to_add = (required_weekday - default_value.weekday()) % 7
+            default_value = default_value + timedelta(days=days_to_add)
+
+    if max_value is not None and default_value > max_value:
+        # Si la valeur par défaut est trop grande, utiliser max_value
+        default_value = max_value
+        # Ajuster au jour de la semaine requis si nécessaire
+        if default_value.weekday() != required_weekday:
+            days_to_subtract = (default_value.weekday() - required_weekday) % 7
+            if days_to_subtract > 0:
+                default_value = default_value - timedelta(days=days_to_subtract)
+
+    # Clé pour stocker la date ajustée
+    adjusted_key = f"{key}_adjusted"
+
+    # Sélecteur de date standard
+    selected_date = st.date_input(
+        label=label,
+        value=default_value,
+        min_value=min_value,
+        max_value=max_value,
+        key=key,
+        help=help_text
+    )
+
+    # Vérifier si la date sélectionnée est au bon jour de la semaine
+    if selected_date.weekday() != required_weekday:
+        # Calculer le prochain jour de la semaine requis
+        days_to_add = (required_weekday - selected_date.weekday()) % 7
+        adjusted_date = selected_date + timedelta(days=days_to_add)
+
+        # Vérifier que la date ajustée est dans les limites
+        if min_value is not None and adjusted_date < min_value:
+            # Si on a dépassé min_value en ajustant, aller au jour requis suivant
+            days_to_add += 7
+            adjusted_date = selected_date + timedelta(days=days_to_add)
+
+        if max_value is not None and adjusted_date > max_value:
+            # Si on a dépassé max_value en ajustant, aller au jour requis précédent
+            adjusted_date = selected_date - timedelta(days=(selected_date.weekday() - required_weekday) % 7)
+
+        # Stocker la date ajustée dans une clé différente
+        st.session_state[adjusted_key] = adjusted_date
+
+        # Afficher un message d'information
+        st.info(f"⚠️ Vous avez sélectionné un {weekday_names[selected_date.weekday()]}. La date a été ajustée au {weekday_name} ({adjusted_date.strftime('%d/%m/%Y')}).")
+
+        # Retourner la date ajustée
+        return adjusted_date
+
+    # Si la date est déjà au bon jour, la retourner directement
+    return selected_date
