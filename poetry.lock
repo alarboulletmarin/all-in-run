@@ -532,6 +532,18 @@ files = [
 referencing = ">=0.31.0"
 
 [[package]]
+name = "lang"
+version = "0.1"
+description = "import lang.[python,lisp,...]"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "lang-0.1-py3-none-any.whl", hash = "sha256:24647c80a85f2a2e7303b5d5ffa3f1c4631fac21dd42a20d6bc9f4abfd92d3a0"},
+    {file = "lang-0.1.tar.gz", hash = "sha256:06daddd4d0dc9cd05b25f15662560d3183a7fe51506930f5babe073fbbf75f0d"},
+]
+
+[[package]]
 name = "markdown-it-py"
 version = "3.0.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
@@ -1686,4 +1698,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "df2f961a393669df1eb63cf3c734b684f942128152c8007de3dd674605f539f8"
+content-hash = "b93cb0006cb2b76d5fbd978964a1f4ece1d090899387e4bd1b5dbbd2d31d2d93"
