@@ -9,6 +9,7 @@ from config.constants import MIN_WEEKS_BEFORE_RACE, MIN_SESSIONS_PER_WEEK, MAX_S
 from config.languages import VALIDATION_ERROR_TRANSLATIONS
 from models.course import RaceType
 from .time_converter import parse_time_string, parse_pace_string
+from .translations import translate
 
 
 def validate_date_range(start_date: date, race_date: date,
@@ -209,11 +210,11 @@ def validate_intermediate_races(intermediate_races: List[Dict[str, Any]],
 
         # Vérifier que la date est un dimanche
         if race_date_obj.weekday() != 6:
-            return False, f"La date de la course intermédiaire {i+1} doit être un dimanche", []
+            return False, translate("race_date_sunday", "validation_error")
 
         # Vérifier que la date est entre start_date et race_date
         if not (start_date < race_date_obj < race_date):
-            return False, f"La date de la course intermédiaire {i+1} doit être entre la date de début et la date de course principale", []
+            return False, translate("intermediate_race_range", "validation_error")
 
         # Valider le type de course
         race_type_str = race.get("race_type")
