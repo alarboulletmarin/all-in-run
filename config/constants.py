@@ -2,6 +2,8 @@
 Constantes utilisées dans l'application All-in-Run.
 """
 
+DATE_FORMAT = "DD/MM/YYYY"  # Format d'affichage des dates
+
 # Constantes temporelles
 MIN_WEEKS_BEFORE_RACE = 12  # Nombre minimal de semaines entre début et course
 MIN_TAPER_WEEKS = 4  # Nombre minimal de semaines d'affûtage

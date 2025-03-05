@@ -25,6 +25,7 @@ __all__ = [
     'UNITS_TRANSLATIONS',
     'VALIDATION_ERROR_TRANSLATIONS',
     # Constants from constants.py
+    'DATE_FORMAT',
     'MIN_WEEKS_BEFORE_RACE',
     'MIN_TAPER_WEEKS',
     'TAPER_PHASE_RATIO',
