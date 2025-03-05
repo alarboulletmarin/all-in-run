@@ -109,12 +109,13 @@ class PlanController:
 
         return self.current_plan
 
-    def export_to_ics(self, lang: str = "fr") -> Optional[bytes]:
+    def export_to_ics(self, lang: str = "fr", options: dict = None) -> Optional[bytes]:
         """
         Exporte le plan courant au format ICS
 
         Args:
             lang: Code de langue
+            options: Options supplémentaires pour l'export
 
         Returns:
             Contenu du fichier ICS ou None si aucun plan n'est chargé
@@ -122,7 +123,7 @@ class PlanController:
         if self.current_plan is None:
             return None
 
-        return self.export_service.export_to_ics(self.current_plan, lang)
+        return self.export_service.export_to_ics(self.current_plan, lang, options)
 
     def export_to_pdf(self, lang: str = "fr") -> Optional[bytes]:
         """
