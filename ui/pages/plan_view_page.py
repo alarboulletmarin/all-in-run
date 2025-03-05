@@ -2,20 +2,16 @@
 Page d'affichage du plan d'entraînement.
 """
 import base64
+import hashlib
+import io
+import json
+from datetime import date
 
 import streamlit as st
-from datetime import date
-import io
-import pandas as pd
 
 from controllers.plan_controller import PlanController
 from models.plan import TrainingPlan
 from models.session import SessionType
-from utils.date_utils import format_date, get_week_number
-from utils.time_converter import format_timedelta
-from utils.i18n import _ as translate
-import hashlib
-import json
 from ui.components import (
     render_week_navigation,
     render_weekly_summary,
@@ -27,6 +23,9 @@ from ui.components import (
     render_phase_volume_distribution,
     render_training_load_chart
 )
+from utils.date_utils import format_date
+from utils.i18n import _ as translate
+from utils.time_converter import format_timedelta
 
 
 def handle_export_ics(plan_controller: PlanController):
@@ -74,7 +73,15 @@ def handle_export_pdf(plan_controller: PlanController):
     Args:
         plan_controller: Contrôleur du plan d'entraînement
     """
-    pdf_data = plan_controller.export_to_pdf()
+    # Options par défaut simples pour l'export simple
+    options = {
+        "include_charts": True,
+        "include_details": True,
+        "paper_size": "A4",
+        "orientation": "portrait"
+    }
+
+    pdf_data = plan_controller.export_to_pdf(options=options)
 
     if pdf_data:
         # Créer un lien de téléchargement

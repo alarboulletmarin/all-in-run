@@ -2,14 +2,13 @@
 Contrôleur pour la gestion du plan d'entraînement.
 """
 from datetime import date
-from typing import Dict, Any, Optional, Union, BinaryIO, List, Tuple
+from typing import Dict, Any, Optional, Union, BinaryIO, List
 
 from models.plan import TrainingPlan
 from models.user_data import UserData
-from models.session import Session, SessionType, TrainingPhase
-from services.plan_generator import PlanGenerator
 from services.export_service import ExportService
 from services.import_service import ImportService
+from services.plan_generator import PlanGenerator
 from utils.storage import storage_manager
 
 
@@ -125,12 +124,17 @@ class PlanController:
 
         return self.export_service.export_to_ics(self.current_plan, lang, options)
 
-    def export_to_pdf(self, lang: str = "fr") -> Optional[bytes]:
+    def export_to_pdf(self, lang: str = "fr", options: dict = None) -> Optional[bytes]:
         """
         Exporte le plan courant au format PDF
 
         Args:
             lang: Code de langue
+            options: Options supplémentaires pour l'export
+                - include_charts: Inclure les graphiques (bool)
+                - include_details: Inclure les détails (bool)
+                - paper_size: Taille du papier (str: "A4", "Letter", "Legal")
+                - orientation: Orientation (str: "portrait", "landscape")
 
         Returns:
             Contenu du fichier PDF ou None si aucun plan n'est chargé
@@ -138,7 +142,7 @@ class PlanController:
         if self.current_plan is None:
             return None
 
-        return self.export_service.export_to_pdf(self.current_plan, lang)
+        return self.export_service.export_to_pdf(self.current_plan, lang, options)
 
     def export_to_json(self) -> Optional[str]:
         """

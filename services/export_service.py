@@ -148,23 +148,57 @@ class ExportService:
         # Convertir en bytes avec l'encodage UTF-8 explicite
         return ics_content.encode("utf-8")
 
-    def export_to_pdf(self, plan: TrainingPlan, lang: str = "fr") -> bytes:
+    def export_to_pdf(self, plan: TrainingPlan, lang: str = "fr", options: dict = None) -> bytes:
         """
         Exporte le plan d'entraînement au format PDF
 
         Args:
             plan: Plan d'entraînement à exporter
             lang: Code de langue
+            options: Options supplémentaires pour l'export
+                - include_charts: Inclure les graphiques (bool)
+                - include_details: Inclure les détails (bool)
+                - paper_size: Taille du papier (str: "A4", "Letter", "Legal")
+                - orientation: Orientation (str: "portrait", "landscape")
 
         Returns:
             Contenu du fichier PDF en bytes
         """
+        # Valeurs par défaut des options
+        default_options = {
+            "include_charts": True,
+            "include_details": True,
+            "paper_size": "A4",
+            "orientation": "portrait"
+        }
+
+        # Fusionner avec les options fournies
+        if options is None:
+            options = {}
+
+        for key, default_value in default_options.items():
+            if key not in options:
+                options[key] = default_value
+
         buffer = io.BytesIO()
+
+        # Déterminer la taille de page
+        page_size = A4  # Taille par défaut
+        if options["paper_size"] == "Letter":
+            from reportlab.lib.pagesizes import LETTER
+            page_size = LETTER
+        elif options["paper_size"] == "Legal":
+            from reportlab.lib.pagesizes import LEGAL
+            page_size = LEGAL
+
+        # Appliquer l'orientation
+        if options["orientation"] == "landscape":
+            page_size = page_size[1], page_size[0]  # inverser largeur et hauteur
 
         # Créer le document PDF
         doc = SimpleDocTemplate(
             buffer,
-            pagesize=A4,
+            pagesize=page_size,
             rightMargin=1.5*cm,
             leftMargin=1.5*cm,
             topMargin=1.5*cm,
@@ -244,108 +278,109 @@ class ExportService:
         content.append(Spacer(1, 1*cm))
 
         # Plan détaillé par semaine
-        content.append(Paragraph("Plan détaillé", heading_style))
+        if options["include_details"]:
+            content.append(Paragraph("Plan détaillé", heading_style))
 
-        sessions_by_week = plan.get_sessions_by_week()
+            sessions_by_week = plan.get_sessions_by_week()
 
-        for week_num in sorted(sessions_by_week.keys()):
-            week_start, week_end = plan.get_week_dates(week_num)
+            for week_num in sorted(sessions_by_week.keys()):
+                week_start, week_end = plan.get_week_dates(week_num)
 
-            # Déterminer la phase de la semaine
-            week_phase = None
-            for day in range(7):
-                day_date = week_start + timedelta(days=day)
-                day_phase = plan.get_phase_for_date(day_date)
-                if day_phase:
-                    week_phase = day_phase
-                    break
+                # Déterminer la phase de la semaine
+                week_phase = None
+                for day in range(7):
+                    day_date = week_start + timedelta(days=day)
+                    day_phase = plan.get_phase_for_date(day_date)
+                    if day_phase:
+                        week_phase = day_phase
+                        break
 
-            # Traduire le nom de la phase
-            phase_name = PHASE_TRANSLATIONS.get(lang, {}).get(
-                week_phase.value if week_phase else "",
-                week_phase.value if week_phase else ""
-            )
-
-            # Titre de la semaine avec la phase
-            week_title = f"Semaine {week_num + 1} - {phase_name}: {format_date(week_start, lang, False)} - {format_date(week_end, lang, False)}"
-            content.append(Paragraph(week_title, heading3_style))
-
-            # Informations sur la semaine
-            week_volume = plan.get_weekly_volume(week_num)
-            week_duration = plan.get_weekly_duration(week_num)
-
-            week_info = [
-                ["Volume", f"{week_volume} km"],
-                ["Temps estimé", format_timedelta(week_duration, 'hms_text')]
-            ]
-
-            week_table = Table(week_info, colWidths=[3*cm, None])
-            week_table.setStyle(TableStyle([
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                ('PADDING', (0, 0), (-1, -1), 6),
-            ]))
-
-            content.append(week_table)
-            content.append(Spacer(1, 0.3*cm))
-
-            # Tableau des séances de la semaine
-            sessions_info = []
-            sessions_info.append([
-                Paragraph("Type", normal_style),
-                Paragraph("Distance", normal_style),
-                Paragraph("Temps", normal_style),
-                Paragraph("Description", normal_style)
-            ])
-
-            # Trier les séances par jour de la semaine
-            week_sessions = sorted(
-                sessions_by_week[week_num],
-                key=lambda s: s.session_date.weekday()
-            )
-
-            for session in week_sessions:
-                day_name = DAYS_TRANSLATIONS.get(lang, {}).get(
-                    session.session_date.weekday(),
-                    session.session_date.strftime("%A")
+                # Traduire le nom de la phase
+                phase_name = PHASE_TRANSLATIONS.get(lang, {}).get(
+                    week_phase.value if week_phase else "",
+                    week_phase.value if week_phase else ""
                 )
 
-                session_type_name = SESSION_TYPE_TRANSLATIONS.get(lang, {}).get(
-                    session.session_type.value,
-                    session.session_type.value
+                # Titre de la semaine avec la phase
+                week_title = f"Semaine {week_num + 1} - {phase_name}: {format_date(week_start, lang, False)} - {format_date(week_end, lang, False)}"
+                content.append(Paragraph(week_title, heading3_style))
+
+                # Informations sur la semaine
+                week_volume = plan.get_weekly_volume(week_num)
+                week_duration = plan.get_weekly_duration(week_num)
+
+                week_info = [
+                    ["Volume", f"{week_volume} km"],
+                    ["Temps estimé", format_timedelta(week_duration, 'hms_text')]
+                ]
+
+                week_table = Table(week_info, colWidths=[3*cm, None])
+                week_table.setStyle(TableStyle([
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('PADDING', (0, 0), (-1, -1), 6),
+                ]))
+
+                content.append(week_table)
+                content.append(Spacer(1, 0.3*cm))
+
+                # Tableau des séances de la semaine
+                sessions_info = []
+                sessions_info.append([
+                    Paragraph("Type", normal_style),
+                    Paragraph("Distance", normal_style),
+                    Paragraph("Temps", normal_style),
+                    Paragraph("Description", normal_style)
+                ])
+
+                # Trier les séances par jour de la semaine
+                week_sessions = sorted(
+                    sessions_by_week[week_num],
+                    key=lambda s: s.session_date.weekday()
                 )
 
-                # Préfixer avec le jour de la semaine
-                full_type_name = f"{day_name}: {session_type_name}"
+                for session in week_sessions:
+                    day_name = DAYS_TRANSLATIONS.get(lang, {}).get(
+                        session.session_date.weekday(),
+                        session.session_date.strftime("%A")
+                    )
 
-                if session.session_type == SessionType.REST:
-                    sessions_info.append([
-                        Paragraph(full_type_name, normal_style),
-                        Paragraph("-", normal_style),
-                        Paragraph("-", normal_style),
-                        Paragraph("Repos", normal_style)
-                    ])
-                else:
-                    # Utiliser Paragraph pour permettre le retour à la ligne automatique
-                    sessions_info.append([
-                        Paragraph(full_type_name, normal_style),
-                        Paragraph(f"{session.total_distance} km", normal_style),
-                        Paragraph(format_timedelta(session.total_duration, 'hms'), normal_style),
-                        Paragraph(session.description, normal_style)
-                    ])
+                    session_type_name = SESSION_TYPE_TRANSLATIONS.get(lang, {}).get(
+                        session.session_type.value,
+                        session.session_type.value
+                    )
 
-            # Créer le tableau avec des largeurs de colonne ajustées
-            # La 4e colonne (description) est plus large pour éviter les coupures
-            sessions_table = Table(sessions_info, colWidths=[4*cm, 2*cm, 2.5*cm, 9*cm])
-            sessions_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Aligner en haut pour le texte multiligne
-                ('PADDING', (0, 0), (-1, -1), 6),
-            ]))
+                    # Préfixer avec le jour de la semaine
+                    full_type_name = f"{day_name}: {session_type_name}"
 
-            content.append(sessions_table)
-            content.append(Spacer(1, 0.7*cm))
+                    if session.session_type == SessionType.REST:
+                        sessions_info.append([
+                            Paragraph(full_type_name, normal_style),
+                            Paragraph("-", normal_style),
+                            Paragraph("-", normal_style),
+                            Paragraph("Repos", normal_style)
+                        ])
+                    else:
+                        # Utiliser Paragraph pour permettre le retour à la ligne automatique
+                        sessions_info.append([
+                            Paragraph(full_type_name, normal_style),
+                            Paragraph(f"{session.total_distance} km", normal_style),
+                            Paragraph(format_timedelta(session.total_duration, 'hms'), normal_style),
+                            Paragraph(session.description, normal_style)
+                        ])
+
+                # Créer le tableau avec des largeurs de colonne ajustées
+                # La 4e colonne (description) est plus large pour éviter les coupures
+                sessions_table = Table(sessions_info, colWidths=[4*cm, 2*cm, 2.5*cm, 9*cm])
+                sessions_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),  # Aligner en haut pour le texte multiligne
+                    ('PADDING', (0, 0), (-1, -1), 6),
+                ]))
+
+                content.append(sessions_table)
+                content.append(Spacer(1, 0.7*cm))
 
         # Générer le PDF
         doc.build(content)
