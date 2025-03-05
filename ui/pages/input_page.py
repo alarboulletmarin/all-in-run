@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from controllers.input_controller import InputController
 from models.course import RaceType
 from ui.components.forms import render_date_with_weekday_constraint
-from utils.date_utils import get_next_monday, get_sunday
+from utils.date_utils import get_next_monday, get_sunday, format_date
 from utils.time_converter import format_pace
 from utils.i18n import _ as translate
 from config.constants import (
@@ -107,6 +107,8 @@ def render_input_form(input_controller: InputController):
 
                 min_race_date = start_date + timedelta(days=MIN_WEEKS_BEFORE_RACE * 7)
 
+                st.info(f"Date minimale pour la course : {format_date(get_sunday(min_race_date))}")
+
                 race_date = render_date_with_weekday_constraint(
                     label=translate("race_date", "input_page"),
                     required_weekday=6,  # Dimanche
@@ -118,20 +120,7 @@ def render_input_form(input_controller: InputController):
 
                 # Vérifier l'écart entre les dates et afficher une information visuelle
                 days_diff = (race_date - start_date).days
-                weeks_diff = days_diff // 7
-
-                if weeks_diff < MIN_WEEKS_BEFORE_RACE:
-                    min_date_info.warning(
-                        translate("min_weeks_warning", "input_page").format(
-                            weeks=MIN_WEEKS_BEFORE_RACE
-                        )
-                    )
-                else:
-                    min_date_info.success(
-                        translate("plan_duration", "input_page").format(
-                            weeks=weeks_diff
-                        )
-                    )
+                weeks_diff = (race_date - start_date).days // 7
 
             st.subheader(translate("training_params", "input_page"))
 
