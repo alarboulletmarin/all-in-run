@@ -1,60 +1,78 @@
 """
 Service d'exportation du plan d'entraînement.
 """
-import json
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, BinaryIO, TextIO
 import io
-import tempfile
-import os
-
-from ics import Calendar, Event
-from ics.alarm import DisplayAlarm
-
+import uuid
+from datetime import datetime, timedelta
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
 
-import uuid
-
-# Bibliothèques tierces pour les exports
+from ics import Calendar, Event
+from ics.alarm import DisplayAlarm
+from ics.grammar.parse import ContentLine
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 
-from models.plan import TrainingPlan
-from models.session import Session, SessionType, TrainingPhase
-from utils.time_converter import format_timedelta, format_pace
-from utils.date_utils import format_date
 from config.languages import (
     DAYS_TRANSLATIONS,
     SESSION_TYPE_TRANSLATIONS,
     PHASE_TRANSLATIONS
 )
+from models.plan import TrainingPlan
+from models.session import SessionType, TrainingPhase
+from utils.date_utils import format_date
+from utils.time_converter import format_timedelta, format_pace
 
 
 class ExportService:
     """Service d'exportation du plan d'entraînement"""
 
-    def export_to_ics(self, plan: TrainingPlan, lang: str = "fr") -> bytes:
+    def export_to_ics(self, plan: TrainingPlan, lang: str = "fr", options: dict = None) -> bytes:
         """
         Exporte le plan d'entraînement au format ICS (calendrier)
 
         Args:
             plan: Plan d'entraînement à exporter
             lang: Code de langue
+            options: Options supplémentaires pour l'export
+                - include_rest_days: Inclure les jours de repos (bool)
+                - reminder_time: Minutes avant la séance pour le rappel (int)
+                - start_time: Heure de début par défaut (int)
+                - ics_calendar_name: Nom du calendrier (str)
 
         Returns:
             Contenu du fichier ICS en bytes
         """
+        # Valeurs par défaut des options
+        default_options = {
+            "include_rest_days": False,
+            "reminder_time": 30,
+            "start_time": 18,
+            "ics_calendar_name": "Training Plan"
+        }
+        
+        # Fusionner avec les options fournies
+        if options is None:
+            options = {}
+        
+        for key, default_value in default_options.items():
+            if key not in options:
+                options[key] = default_value
+
         # Créer un nouveau calendrier avec les métadonnées requises
         calendar = Calendar()
+        calendar.scale = 'GREGORIAN'
+        calendar.method = 'PUBLISH'
+        calendar.name = options["ics_calendar_name"]
+        calendar.creator = 'All-in-Run Training Plan Generator'
 
         # Ajouter chaque séance comme un événement du calendrier
         for session_date, session in plan.sessions.items():
-            if session.session_type == SessionType.REST:
-                # Vous pouvez choisir d'ignorer ou d'inclure les jours de repos
+            if session.session_type == SessionType.REST and not options["include_rest_days"]:
+                # Ignorer les jours de repos si l'option est désactivée
                 continue
 
             # Créer un événement pour la séance
@@ -89,9 +107,8 @@ class ExportService:
 
             event.description = "\n".join(description)
 
-            # Date et heure (par défaut, mettre la séance à 18h)
-            # Convertir en datetime (important pour iOS)
-            start_time = datetime.combine(session_date, datetime.min.time().replace(hour=18))
+            # Date et heure (utiliser l'heure de début définie dans les options)
+            start_time = datetime.combine(session_date, datetime.min.time().replace(hour=options["start_time"]))
 
             # La durée de l'événement doit être un timedelta pour ics
             duration = timedelta(minutes=max(30, int(session.total_duration.total_seconds() / 60)))
@@ -99,8 +116,9 @@ class ExportService:
             event.begin = start_time
             event.duration = duration
 
-            # Ajouter une alarme (rappel) - très apprécié sur iOS
-            alarm = DisplayAlarm(trigger=timedelta(minutes=-30))
+            # Ajouter une alarme (rappel) avec le temps défini dans les options
+            reminder_time = options["reminder_time"]
+            alarm = DisplayAlarm(trigger=timedelta(minutes=-reminder_time))
             event.alarms.append(alarm)
 
             # Catégorie pour faciliter le filtrage
@@ -113,7 +131,18 @@ class ExportService:
             calendar.events.add(event)
 
         # Convertir le calendrier en chaîne ICS
-        str(calendar)
+
+        # Ajouter les propriétés spéciales X- au calendrier
+        calendar.extra.append(
+            ContentLine(name="X-WR-CALNAME", value=options['ics_calendar_name'])
+        )
+        calendar.extra.append(
+            ContentLine(name="X-WR-CALDESC", value="Plan d'entraînement running généré par All-in-Run")
+        )
+        calendar.extra.append(
+            ContentLine(name="X-WR-TIMEZONE", value="Europe/Paris")
+        )
+        
         ics_content = calendar.serialize()
 
         # Convertir en bytes avec l'encodage UTF-8 explicite
