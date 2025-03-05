@@ -5,6 +5,7 @@ import streamlit as st
 from datetime import date, timedelta
 from typing import Dict, Any, Optional, Tuple, Callable
 
+from config import DATE_FORMAT
 from utils.date_utils import get_next_monday, get_sunday
 from utils.time_converter import parse_pace_string, format_timedelta, format_pace
 from utils.i18n import _ as translate
@@ -27,7 +28,7 @@ def render_date_selector(
         help_text: str = None,
         required_weekday: Optional[int] = None,
         on_change: Optional[Callable] = None,
-        strict_weekday: bool = False  # Nouvel argument pour forcer le jour de la semaine
+        strict_weekday: bool = False
 ) -> date:
     """
     Affiche un sélecteur de date avec validation du jour de la semaine
@@ -60,7 +61,7 @@ def render_date_selector(
         key=key,
         help=help_text,
         on_change=on_change,
-        format="DD/MM/YYYY"
+        format=DATE_FORMAT
     )
 
     # Vérifier le jour de la semaine si nécessaire
@@ -510,10 +511,6 @@ def render_date_with_weekday_constraint(
     Affiche un sélecteur de date et ajuste automatiquement la date au jour requis
     sans modifier la session state
     """
-    # Noms des jours de la semaine
-    weekday_names = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
-    weekday_name = weekday_names[required_weekday]
-
     # Ajuster la valeur par défaut si nécessaire
     if default_value is None:
         default_value = date.today()
@@ -551,14 +548,16 @@ def render_date_with_weekday_constraint(
         min_value=min_value,
         max_value=max_value,
         key=key,
-        help=help_text
+        help=help_text,
+        format=DATE_FORMAT
     )
 
     # Vérifier si la date sélectionnée est au bon jour de la semaine
     if selected_date.weekday() != required_weekday:
+        weekday_name = translate(f"day_{required_weekday}", "common")
         # Calculer le prochain jour de la semaine requis
         days_to_add = (required_weekday - selected_date.weekday()) % 7
-        adjusted_date = selected_date + timedelta(days=days_to_add)
+        adjusted_date = selected_date + timedelta(days=(required_weekday - selected_date.weekday()) % 7)
 
         # Vérifier que la date ajustée est dans les limites
         if min_value is not None and adjusted_date < min_value:
@@ -574,7 +573,8 @@ def render_date_with_weekday_constraint(
         st.session_state[adjusted_key] = adjusted_date
 
         # Afficher un message d'information
-        st.info(f"⚠️ Vous avez sélectionné un {weekday_names[selected_date.weekday()]}. La date a été ajustée au {weekday_name} ({adjusted_date.strftime('%d/%m/%Y')}).")
+        st.warning(f"⚠️ {translate('date_needs_to_be_weekday', 'forms').format(weekday=weekday_name)}\n"
+                   f"{translate('adjusted_to', 'forms')}: {adjusted_date.strftime('%d/%m/%Y')}")
 
         # Retourner la date ajustée
         return adjusted_date
