@@ -29,9 +29,6 @@ RUN pip install --upgrade pip --root-user-action=ignore && \
 # Image finale plus légère
 FROM python:3.9-slim
 
-# Maintainer label pour information
-LABEL maintainer="All-in-Run <contact@example.com>"
-
 # Variables d'environnement
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
