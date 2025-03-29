@@ -1,23 +1,23 @@
 {
-  "previous_week": "Semaine précédente",
-  "next_week": "Semaine suivante",
-  "week": "Semaine",
+  "previous_week": "Previous week",
+  "next_week": "Next week",
+  "week": "Week",
 
-  "weekly_volume": "Volume hebdomadaire",
-  "weekly_duration": "Durée hebdomadaire",
-  "session_types": "Types de séances",
-  "average_intensity": "Intensité moyenne",
+  "weekly_volume": "Weekly volume",
+  "weekly_duration": "Weekly duration",
+  "session_types": "Session types",
+  "average_intensity": "Average intensity",
 
   "distance": "Distance",
-  "duration": "Durée",
-  "average_pace": "Allure moyenne",
+  "duration": "Duration",
+  "average_pace": "Average pace",
   "description": "Description",
-  "session_blocks": "Blocs de la séance",
-  "pace": "Allure",
+  "session_blocks": "Session blocks",
+  "pace": "Pace",
 
-  "rest_day_description": "Journée de repos. Profitez-en pour récupérer et préparer vos prochaines séances.",
+  "rest_day_description": "Rest day. Take advantage of it to recover and prepare for your next sessions.",
 
-  "training_phases": "Phases d'entraînement",
+  "training_phases": "Training phases",
   "phase": "Phase",
   "date": "Date"
 }

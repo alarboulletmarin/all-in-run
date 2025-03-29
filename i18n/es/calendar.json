@@ -1,23 +1,23 @@
 {
-  "previous_week": "Semaine précédente",
-  "next_week": "Semaine suivante",
-  "week": "Semaine",
+  "previous_week": "Semana anterior",
+  "next_week": "Semana siguiente",
+  "week": "Semana",
 
-  "weekly_volume": "Volume hebdomadaire",
-  "weekly_duration": "Durée hebdomadaire",
-  "session_types": "Types de séances",
-  "average_intensity": "Intensité moyenne",
+  "weekly_volume": "Volumen semanal",
+  "weekly_duration": "Duración semanal",
+  "session_types": "Tipos de sesiones",
+  "average_intensity": "Intensidad media",
 
-  "distance": "Distance",
-  "duration": "Durée",
-  "average_pace": "Allure moyenne",
-  "description": "Description",
-  "session_blocks": "Blocs de la séance",
-  "pace": "Allure",
+  "distance": "Distancia",
+  "duration": "Duración",
+  "average_pace": "Ritmo medio",
+  "description": "Descripción",
+  "session_blocks": "Bloques de sesión",
+  "pace": "Ritmo",
 
-  "rest_day_description": "Journée de repos. Profitez-en pour récupérer et préparer vos prochaines séances.",
+  "rest_day_description": "Día de descanso. Aprovecha para recuperarte y preparar tus próximas sesiones.",
 
-  "training_phases": "Phases d'entraînement",
-  "phase": "Phase",
-  "date": "Date"
+  "training_phases": "Fases de entrenamiento",
+  "phase": "Fase",
+  "date": "Fecha"
 }
