@@ -10,6 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     python3-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Créer un utilisateur non-root
@@ -21,9 +22,9 @@ WORKDIR /app
 # Copier uniquement les fichiers de dépendances d'abord pour optimiser le cache Docker
 COPY requirements.txt .
 
-# Installer les dépendances
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Installer les dépendances avec le flag pour éviter les avertissements root
+RUN pip install --upgrade pip --root-user-action=ignore && \
+    pip install --no-cache-dir -r requirements.txt --root-user-action=ignore
 
 # Image finale plus légère
 FROM python:3.9-slim
@@ -36,6 +37,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     APP_HOME=/app
 
+# Installer curl pour le healthcheck
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Créer le même utilisateur non-root
 RUN groupadd -r app && useradd -r -g app app
 
@@ -44,6 +50,7 @@ WORKDIR $APP_HOME
 
 # Copier les dépendances depuis le builder
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Créer le répertoire pour stocker les données
 RUN mkdir -p $APP_HOME/data && chown -R app:app $APP_HOME
