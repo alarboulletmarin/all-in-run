@@ -1,6 +1,3 @@
-"""
-Composants d'affichage du calendrier d'entraînement.
-"""
 import streamlit as st
 from datetime import date, timedelta
 from typing import Optional, Callable
@@ -473,8 +470,6 @@ def render_week_calendar(
     </div>
     """, unsafe_allow_html=True)
 
-    # Utiliser des colonnes Streamlit pour les séances
-    # (nécessaire pour les composants interactifs comme les boutons)
     cols = st.columns(7)
 
     for i, col in enumerate(cols):

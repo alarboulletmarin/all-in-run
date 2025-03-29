@@ -1,6 +1,3 @@
-"""
-Package components - Composants d'interface utilisateur réutilisables pour l'application All-in-Run.
-"""
 from .forms import (
     render_date_selector,
     render_pace_input,

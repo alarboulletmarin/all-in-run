@@ -1,6 +1,3 @@
-"""
-Composants de mise en page responsive pour améliorer l'expérience sur différents appareils.
-"""
 import streamlit as st
 from typing import List, Callable, Dict, Any, Union, Optional
 

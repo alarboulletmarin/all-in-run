@@ -1,6 +1,3 @@
-"""
-Composants de formulaire réutilisables pour l'interface utilisateur.
-"""
 import streamlit as st
 from datetime import date, timedelta
 from typing import Dict, Any, Optional, Tuple, Callable
@@ -50,7 +47,6 @@ def render_date_selector(
     # Si aucune valeur par défaut n'est fournie, utiliser la date du jour
     if default_value is None:
         default_value = date.today()
-
 
     # Afficher le sélecteur de date
     selected_date = st.date_input(
@@ -108,6 +104,7 @@ def render_date_selector(
                     return adjusted_date
 
     return selected_date
+
 
 def render_pace_input(
         label: str,
@@ -366,7 +363,8 @@ def render_intermediate_race_form(
         race_date = render_date_selector(
             label=translate("race_date", "forms"),
             key=f"intermediate_race_{index}_date",
-            default_value=default_values.get("race_date", date.today() + timedelta(days=30)),
+            default_value=default_values.get(
+                "race_date", date.today() + timedelta(days=30)),
             required_weekday=6,  # Dimanche
             help_text=translate("intermediate_race_date_help", "forms"),
             strict_weekday=True
@@ -498,6 +496,7 @@ def create_paces_summary(
 
     return paces
 
+
 def render_date_with_weekday_constraint(
         label: str,
         key: str,
@@ -536,7 +535,8 @@ def render_date_with_weekday_constraint(
         if default_value.weekday() != required_weekday:
             days_to_subtract = (default_value.weekday() - required_weekday) % 7
             if days_to_subtract > 0:
-                default_value = default_value - timedelta(days=days_to_subtract)
+                default_value = default_value - \
+                    timedelta(days=days_to_subtract)
 
     # Clé pour stocker la date ajustée
     adjusted_key = f"{key}_adjusted"
@@ -557,7 +557,8 @@ def render_date_with_weekday_constraint(
         weekday_name = translate(f"day_{required_weekday}", "common")
         # Calculer le prochain jour de la semaine requis
         days_to_add = (required_weekday - selected_date.weekday()) % 7
-        adjusted_date = selected_date + timedelta(days=(required_weekday - selected_date.weekday()) % 7)
+        adjusted_date = selected_date + \
+            timedelta(days=(required_weekday - selected_date.weekday()) % 7)
 
         # Vérifier que la date ajustée est dans les limites
         if min_value is not None and adjusted_date < min_value:
@@ -567,7 +568,8 @@ def render_date_with_weekday_constraint(
 
         if max_value is not None and adjusted_date > max_value:
             # Si on a dépassé max_value en ajustant, aller au jour requis précédent
-            adjusted_date = selected_date - timedelta(days=(selected_date.weekday() - required_weekday) % 7)
+            adjusted_date = selected_date - \
+                timedelta(days=(selected_date.weekday() - required_weekday) % 7)
 
         # Stocker la date ajustée dans une clé différente
         st.session_state[adjusted_key] = adjusted_date

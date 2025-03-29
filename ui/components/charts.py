@@ -1,6 +1,3 @@
-"""
-Composants améliorés de visualisation graphique pour l'interface utilisateur.
-"""
 import streamlit as st
 from datetime import timedelta
 from typing import Optional
@@ -11,9 +8,8 @@ import pandas as pd
 
 from models.plan import TrainingPlan
 from models.session import SessionType, TrainingPhase
-from utils.i18n import _ as translate
+from utils.i18n import _ as translate 
 from config.languages import PHASE_TRANSLATIONS, SESSION_TYPE_TRANSLATIONS
-
 
 def render_volume_chart(
         plan: TrainingPlan,
@@ -56,7 +52,8 @@ def render_volume_chart(
                 break
 
         # Traduire le nom de la phase
-        from utils.translations import translate  # Import the translation function explicitly
+        # Import the translation function explicitly
+        from utils.translations import translate
         phase_name = translate(phase.value, "phases") if phase else "Unknown"
         phases.append(phase_name)
         colors.append(phase_colors.get(phase, "rgba(158, 158, 158, 0.7)"))
@@ -100,7 +97,8 @@ def render_volume_chart(
             # Au lieu d'utiliser update_traces avec un sélecteur, utilisons add_shape
             fig.add_shape(
                 type="rect",
-                x0=week_numbers[i] - 0.4,  # Ajuster selon la largeur des barres
+                # Ajuster selon la largeur des barres
+                x0=week_numbers[i] - 0.4,
                 x1=week_numbers[i] + 0.4,
                 y0=0,
                 y1=volumes[i],
@@ -131,7 +129,8 @@ def render_volume_chart(
 
         fig.add_trace(
             go.Scatter(
-                x=[current_week + 1],  # +1 car les semaines sont 1-based dans l'affichage
+                # +1 car les semaines sont 1-based dans l'affichage
+                x=[current_week + 1],
                 y=[current_volume],
                 mode="markers",
                 marker=dict(
@@ -222,19 +221,23 @@ def render_intensity_distribution(
             distance = block.distance
 
             if pace_seconds > 390:  # > 6:30/km
-                intensity_bins[translate("recovery", "intensity")] += duration_mins
+                intensity_bins[translate(
+                    "recovery", "intensity")] += duration_mins
                 distance_bins[translate("recovery", "intensity")] += distance
             elif pace_seconds > 330:  # 5:30-6:30/km
                 intensity_bins[translate("easy", "intensity")] += duration_mins
                 distance_bins[translate("easy", "intensity")] += distance
             elif pace_seconds > 270:  # 4:30-5:30/km
-                intensity_bins[translate("moderate", "intensity")] += duration_mins
+                intensity_bins[translate(
+                    "moderate", "intensity")] += duration_mins
                 distance_bins[translate("moderate", "intensity")] += distance
             elif pace_seconds > 240:  # 4:00-4:30/km
-                intensity_bins[translate("threshold", "intensity")] += duration_mins
+                intensity_bins[translate(
+                    "threshold", "intensity")] += duration_mins
                 distance_bins[translate("threshold", "intensity")] += distance
             elif pace_seconds > 210:  # 3:30-4:00/km
-                intensity_bins[translate("interval", "intensity")] += duration_mins
+                intensity_bins[translate(
+                    "interval", "intensity")] += duration_mins
                 distance_bins[translate("interval", "intensity")] += distance
             else:  # < 3:30/km
                 intensity_bins[translate("race", "intensity")] += duration_mins
@@ -269,9 +272,12 @@ def render_intensity_distribution(
     ]
 
     # Filtrer et trier selon l'ordre défini
-    ordered_intensities = [zone for zone in intensity_order if zone in intensity_hours_dict]
-    ordered_hours = [intensity_hours_dict[zone] for zone in ordered_intensities]
-    ordered_distances = [distance_filtered.get(zone, 0) for zone in ordered_intensities]
+    ordered_intensities = [
+        zone for zone in intensity_order if zone in intensity_hours_dict]
+    ordered_hours = [intensity_hours_dict[zone]
+                     for zone in ordered_intensities]
+    ordered_distances = [distance_filtered.get(
+        zone, 0) for zone in ordered_intensities]
 
     # Définir des couleurs pour chaque intensité
     intensity_colors = {
@@ -283,7 +289,8 @@ def render_intensity_distribution(
         translate("race", "intensity"): "rgba(244, 67, 54, 0.8)"         # Rouge
     }
 
-    colors = [intensity_colors.get(zone, "rgba(0, 0, 0, 0.7)") for zone in ordered_intensities]
+    colors = [intensity_colors.get(zone, "rgba(0, 0, 0, 0.7)")
+              for zone in ordered_intensities]
 
     # Créer deux sous-graphiques pour le temps et la distance
     fig = make_subplots(
@@ -361,7 +368,7 @@ def render_session_type_distribution(
         lang: str = "fr"
 ) -> None:
     """
-    Affiche un graphique amélioré de la répartition des types de séances
+    Affiche un graphique de la répartition des types de séances
 
     Args:
         plan: Plan d'entraînement
@@ -379,10 +386,12 @@ def render_session_type_distribution(
             )
 
             # Accumulation du volume
-            session_types_volume[translated_type] = session_types_volume.get(translated_type, 0) + session.total_distance
+            session_types_volume[translated_type] = session_types_volume.get(
+                translated_type, 0) + session.total_distance
 
             # Comptage des séances
-            session_types_count[translated_type] = session_types_count.get(translated_type, 0) + 1
+            session_types_count[translated_type] = session_types_count.get(
+                translated_type, 0) + 1
 
     if not session_types_volume:
         st.warning(translate("no_data_available", "charts"))
@@ -418,7 +427,8 @@ def render_session_type_distribution(
             textinfo="label+percent",
             hoverinfo="label+value+percent",
             hovertemplate="%{label}<br>%{value:.1f} km (%{percent})<extra></extra>",
-            marker_colors=[session_type_colors.get(label, "#9E9E9E") for label in labels_volume]
+            marker_colors=[session_type_colors.get(
+                label, "#9E9E9E") for label in labels_volume]
         ),
         row=1, col=1
     )
@@ -435,7 +445,8 @@ def render_session_type_distribution(
             textinfo="label+percent",
             hoverinfo="label+value+percent",
             hovertemplate="%{label}<br>%{value} séances (%{percent})<extra></extra>",
-            marker_colors=[session_type_colors.get(label, "#9E9E9E") for label in labels_count]
+            marker_colors=[session_type_colors.get(
+                label, "#9E9E9E") for label in labels_count]
         ),
         row=1, col=2
     )
@@ -504,7 +515,8 @@ def render_phase_volume_distribution(
     fig.add_trace(go.Bar(
         x=phases,
         y=volumes,
-        text=[f"{vol:.1f} km<br>{weeks} semaines" for vol, weeks in zip(volumes, num_weeks)],
+        text=[f"{vol:.1f} km<br>{weeks} semaines" for vol,
+              weeks in zip(volumes, num_weeks)],
         textposition="auto",
         marker_color=colors,
         hovertemplate="%{x}<br>Volume: %{y:.1f} km<br>Semaines: %{text}<extra></extra>"
@@ -667,7 +679,8 @@ def render_training_load_chart(
 
         fig.add_trace(
             go.Scatter(
-                x=[current_week + 1],  # +1 car les semaines sont 1-based dans l'affichage
+                # +1 car les semaines sont 1-based dans l'affichage
+                x=[current_week + 1],
                 y=[current_load],
                 mode="markers",
                 marker=dict(
@@ -676,7 +689,8 @@ def render_training_load_chart(
                     symbol="circle",
                     line=dict(color="rgba(33, 150, 243, 1)", width=2)
                 ),
-                name=translate("current_week", "charts") + " (" + translate("load", "charts") + ")",
+                name=translate("current_week", "charts") +
+                " (" + translate("load", "charts") + ")",
                 hoverinfo="skip"
             ),
             secondary_y=False
@@ -693,7 +707,8 @@ def render_training_load_chart(
                     symbol="circle",
                     line=dict(color="rgba(255, 87, 34, 1)", width=2)
                 ),
-                name=translate("current_week", "charts") + " (" + translate("intensity", "charts") + ")",
+                name=translate("current_week", "charts") +
+                " (" + translate("intensity", "charts") + ")",
                 hoverinfo="skip"
             ),
             secondary_y=True
@@ -816,7 +831,8 @@ def render_weekly_distance_by_type(
         )
 
         # Traduire le jour de la semaine
-        day_name = translate(f"day_{session.session_date.weekday()}", "common") or f"Jour {session.session_date.weekday() + 1}"
+        day_name = translate(f"day_{session.session_date.weekday()}",
+                             "common") or f"Jour {session.session_date.weekday() + 1}"
 
         # Déterminer la couleur
         color = session_type_colors.get(session.session_type, "#9E9E9E")
@@ -893,7 +909,8 @@ def render_weekly_distance_by_type(
 
     # Personnalisation de l'axe X et Y du graphique à barres
     fig.update_xaxes(title_text=translate("day", "charts"), row=1, col=2)
-    fig.update_yaxes(title_text=translate("distance_km", "charts"), row=1, col=2)
+    fig.update_yaxes(title_text=translate(
+        "distance_km", "charts"), row=1, col=2)
 
     # Afficher le graphique
     st.plotly_chart(fig, use_container_width=True, config={"responsive": True})
@@ -917,11 +934,13 @@ def render_comparison_chart(
     if metric == "volume":
         # Comparer les volumes hebdomadaires
         original_weeks = sorted(original_plan.weekly_volumes.keys())
-        original_volumes = [original_plan.weekly_volumes[week] for week in original_weeks]
+        original_volumes = [original_plan.weekly_volumes[week]
+                            for week in original_weeks]
         original_week_numbers = [week + 1 for week in original_weeks]
 
         simulated_weeks = sorted(simulated_plan.weekly_volumes.keys())
-        simulated_volumes = [simulated_plan.weekly_volumes[week] for week in simulated_weeks]
+        simulated_volumes = [simulated_plan.weekly_volumes[week]
+                             for week in simulated_weeks]
         simulated_week_numbers = [week + 1 for week in simulated_weeks]
 
         # Déterminer le nombre maximum de semaines pour l'axe X
@@ -958,7 +977,8 @@ def render_comparison_chart(
         fig.add_trace(
             go.Scatter(
                 x=original_week_numbers,
-                y=pd.Series(original_volumes).rolling(window=3, min_periods=1).mean(),
+                y=pd.Series(original_volumes).rolling(
+                    window=3, min_periods=1).mean(),
                 mode="lines",
                 name=translate("original_trend", "charts"),
                 line=dict(color="rgba(33, 150, 243, 1)", width=2, dash="dash"),
@@ -969,7 +989,8 @@ def render_comparison_chart(
         fig.add_trace(
             go.Scatter(
                 x=simulated_week_numbers,
-                y=pd.Series(simulated_volumes).rolling(window=3, min_periods=1).mean(),
+                y=pd.Series(simulated_volumes).rolling(
+                    window=3, min_periods=1).mean(),
                 mode="lines",
                 name=translate("simulated_trend", "charts"),
                 line=dict(color="rgba(76, 175, 80, 1)", width=2, dash="dash"),
@@ -1024,8 +1045,10 @@ def render_comparison_chart(
         weeks = []
 
         max_week = max(
-            max(original_plan.weekly_volumes.keys()) if original_plan.weekly_volumes else 0,
-            max(simulated_plan.weekly_volumes.keys()) if simulated_plan.weekly_volumes else 0
+            max(original_plan.weekly_volumes.keys()
+                ) if original_plan.weekly_volumes else 0,
+            max(simulated_plan.weekly_volumes.keys()
+                ) if simulated_plan.weekly_volumes else 0
         )
 
         for week in range(max_week + 1):
@@ -1137,10 +1160,12 @@ def render_comparison_chart(
                 )
 
                 # Comptage des séances
-                original_types[translated_type] = original_types.get(translated_type, 0) + 1
+                original_types[translated_type] = original_types.get(
+                    translated_type, 0) + 1
 
                 # Calcul du volume par type
-                original_volume_by_type[translated_type] = original_volume_by_type.get(translated_type, 0) + session.total_distance
+                original_volume_by_type[translated_type] = original_volume_by_type.get(
+                    translated_type, 0) + session.total_distance
 
         simulated_types = {}
         simulated_volume_by_type = {}
@@ -1153,13 +1178,16 @@ def render_comparison_chart(
                 )
 
                 # Comptage des séances
-                simulated_types[translated_type] = simulated_types.get(translated_type, 0) + 1
+                simulated_types[translated_type] = simulated_types.get(
+                    translated_type, 0) + 1
 
                 # Calcul du volume par type
-                simulated_volume_by_type[translated_type] = simulated_volume_by_type.get(translated_type, 0) + session.total_distance
+                simulated_volume_by_type[translated_type] = simulated_volume_by_type.get(
+                    translated_type, 0) + session.total_distance
 
         # Combiner les types pour avoir le même ensemble dans les deux plans
-        all_types = sorted(set(original_types.keys()) | set(simulated_types.keys()))
+        all_types = sorted(set(original_types.keys()) |
+                           set(simulated_types.keys()))
 
         # Créer deux sous-graphiques pour le nombre de séances et le volume par type
         fig = make_subplots(
