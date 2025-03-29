@@ -56,5 +56,8 @@
   "race_date": "Fecha de carrera",
   "target_pace": "Ritmo objetivo",
   "race_type": "Tipo de carrera",
-  "week_number": "Número de semana"
+  "week_number": "Número de semana",
+  "navigation": "Menú de navegación",
+  "training_plan": "Plan de entrenamiento",
+  "training_plan_description": "Plan de entrenamiento personalizado basado en tus objetivos y capacidades actuales."
 }

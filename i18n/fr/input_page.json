@@ -30,6 +30,7 @@
   "delete_race": "Supprimer cette course",
   "target_pace": "Allure visée (mm:ss/km)",
   "generate_plan": "Générer mon plan",
+  "create_plan": "Créer un plan d'entraînement",
   "add_new_race": "Ajouter une nouvelle course intermédiaire",
   "existing_races": "Courses intermédiaires configurées",
   "race_added": "Course intermédiaire ajoutée avec succès",
