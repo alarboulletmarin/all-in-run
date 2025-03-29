@@ -52,5 +52,9 @@
   "create_plan": "Create a training plan",
   "view_plan": "View training plan",
   "simulate": "Simulate a training plan",
-  "app_description": "Generate your personalized training plan with All in Run"
+  "app_description": "Generate your personalized training plan with All in Run",
+  "race_date": "Race date",
+  "target_pace": "Target pace",
+  "race_type": "Race type",
+  "week_number": "Week number"
 }

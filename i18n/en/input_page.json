@@ -41,5 +41,6 @@
   "paces_valid": "Your paces are consistent.",
   "save_paces": "Save my paces",
   "plan_generation_success": "Training plan successfully generated!",
-  "paces_saved": "Your paces have been successfully saved."
+  "paces_saved": "Your paces have been successfully saved.",
+  "pace_half_marathon": "Half marathon pace"
 }

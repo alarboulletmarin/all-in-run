@@ -41,5 +41,6 @@
   "paces_valid": "Vos allures sont cohérentes.",
   "save_paces": "Enregistrer mes allures",
   "plan_generation_success": "Plan d'entraînement généré avec succès!",
-  "paces_saved": "Vos allures ont été enregistrées avec succès."
+  "paces_saved": "Vos allures ont été enregistrées avec succès.",
+  "pace_half_marathon": "Allure semi-marathon"
 }

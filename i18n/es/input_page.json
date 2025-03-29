@@ -41,5 +41,6 @@
   "paces_valid": "Tus ritmos son coherentes.",
   "save_paces": "Guardar mis ritmos",
   "plan_generation_success": "¡Plan de entrenamiento generado con éxito!",
-  "paces_saved": "Tus ritmos se han guardado correctamente."
+  "paces_saved": "Tus ritmos se han guardado correctamente.",
+  "pace_half_marathon": "Ritmo de medio maratón"
 }

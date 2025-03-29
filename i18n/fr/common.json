@@ -52,5 +52,9 @@
   "create_plan": "Créer un plan d'entraînement",
   "view_plan": "Voir le plan d'entraînement",
   "simulate": "Simuler un plan d'entraînement",
-  "app_description": "Générez votre plan d'entraînement personnalisé avec All in Run"
+  "app_description": "Générez votre plan d'entraînement personnalisé avec All in Run",
+  "race_date": "Date de course",
+  "target_pace": "Allure cible",
+  "race_type": "Type de course",
+  "week_number": "Numéro de semaine"
 }
