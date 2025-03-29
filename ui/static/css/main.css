@@ -1,0 +1,41 @@
+/* Styles généraux */
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* Amélioration des titres */
+h1,
+h2,
+h3 {
+    color: #2C3E50;
+    margin-bottom: 1.2rem;
+}
+
+h1 {
+    border-bottom: 2px solid #3498DB;
+    padding-bottom: 0.5rem;
+}
+
+/* Personnalisation des cartes et éléments */
+.stAlert {
+    border-radius: 10px !important;
+    border: none !important;
+}
+
+/* Styles pour les onglets */
+.stTabs [data-baseweb="tab"] {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #f0f2f6;
+    background-color: #f0f2f6;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #3498DB;
+    color: white;
+    border-bottom: 4px solid #3498DB !important;
+    border-radius: 4px;
+    border: 1px solid #3498DB;
+}

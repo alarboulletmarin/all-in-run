@@ -8,6 +8,7 @@ from utils.date_utils import format_date, get_week_number
 from utils.time_converter import format_timedelta, format_pace, format_duration_for_calendar
 from utils.i18n import _ as translate
 from config.languages import DAYS_TRANSLATIONS, SESSION_TYPE_TRANSLATIONS
+from ui.utils.style_loader import load_calendar_css
 
 
 def render_week_navigation(
@@ -96,7 +97,8 @@ def render_week_navigation(
         phase_str = translate(phase.value, "phases") if phase else ""
 
         # Calculer le pourcentage de progression
-        progress_percent = min(100, int((current_week + 1) / total_weeks * 100))
+        progress_percent = min(
+            100, int((current_week + 1) / total_weeks * 100))
 
         # Afficher le titre et les dates de la semaine
         st.markdown(f"""
@@ -135,6 +137,9 @@ def render_weekly_summary(
         current_week: Numéro de la semaine
         lang: Code de langue
     """
+    # Charger les styles spécifiques au calendrier
+    load_calendar_css()
+
     # Calculer le volume et la durée de la semaine
     volume = plan.get_weekly_volume(current_week)
     duration = plan.get_weekly_duration(current_week)
@@ -152,70 +157,9 @@ def render_weekly_summary(
             )
             session_types[type_name] = session_types.get(type_name, 0) + 1
 
-    # Ajouter des styles CSS personnalisés
-    st.markdown("""
-    <style>
-    .stats-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-    .stat-card {
-        background-color: white;
-        border-radius: 8px;
-        padding: 15px;
-        flex: 1;
-        min-width: 200px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-    .stat-value {
-        font-size: 1.8em;
-        font-weight: bold;
-        margin: 5px 0;
-        color: #2C3E50;
-    }
-    .stat-label {
-        color: #7F8C8D;
-        font-size: 0.9em;
-    }
-    .session-types {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    .session-type {
-        background-color: #f5f5f5;
-        border-radius: 15px;
-        padding: 6px 12px;
-        font-size: 0.85em;
-    }
-    .intensity-container {
-        margin-top: 10px;
-    }
-    .intensity-bar {
-        height: 8px;
-        background-color: #e0e0e0;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .intensity-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336);
-    }
-    @media (max-width: 768px) {
-        .stats-container {
-            flex-direction: column;
-        }
-        .stat-card {
-            min-width: 100%;
-        }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
     # Calculer l'intensité moyenne (si applicable)
-    active_sessions = [s for s in sessions if s.session_type != SessionType.REST]
+    active_sessions = [
+        s for s in sessions if s.session_type != SessionType.REST]
     intensity_percent = 0
 
     if active_sessions:
@@ -247,7 +191,8 @@ def render_weekly_summary(
             st.markdown(f"- {type_name}: {count}")
 
         st.markdown(f"**{translate('average_intensity', 'calendar')}**")
-        st.progress(intensity_percent/100)  # Utilise le composant de barre de progression natif
+        # Utilise le composant de barre de progression natif
+        st.progress(intensity_percent/100)
 
 
 def render_session_card(
@@ -481,7 +426,8 @@ def render_week_calendar(
                 render_session_card(session, lang, on_session_click)
             else:
                 # Espace vide pour maintenir l'alignement
-                st.markdown('<div style="height: 100px;"></div>', unsafe_allow_html=True)
+                st.markdown('<div style="height: 100px;"></div>',
+                            unsafe_allow_html=True)
 
 
 def render_session_details(
@@ -542,7 +488,8 @@ def render_session_details(
     with col3:
         # Calcul de l'allure moyenne
         if session.total_distance > 0:
-            avg_pace = timedelta(seconds=session.total_duration.total_seconds() / session.total_distance)
+            avg_pace = timedelta(
+                seconds=session.total_duration.total_seconds() / session.total_distance)
             st.metric(
                 label=translate("average_pace", "calendar"),
                 value=format_pace(avg_pace)
@@ -615,8 +562,10 @@ def render_session_details(
         for i, block in enumerate(session.blocks, 1):
             # Couleur de fond basée sur l'intensité relative du bloc
             # Plus l'allure est rapide, plus la couleur est chaude
-            base_pace = session.blocks[-1].pace.total_seconds()  # Le bloc le plus lent (souvent récup)
-            relative_intensity = 1 - min(1, block.pace.total_seconds() / base_pace)
+            # Le bloc le plus lent (souvent récup)
+            base_pace = session.blocks[-1].pace.total_seconds()
+            relative_intensity = 1 - \
+                min(1, block.pace.total_seconds() / base_pace)
 
             # Couleur entre vert (0) et rouge (1)
             r = int(255 * relative_intensity)
@@ -674,7 +623,8 @@ def render_phase_timeline(
         phases.append(phase_name)
         start_dates.append(stats["start_date"])
         end_dates.append(stats["end_date"])
-        colors.append(phase_colors.get(phase, "rgba(158, 158, 158, 0.7)"))  # Gris par défaut
+        colors.append(phase_colors.get(
+            phase, "rgba(158, 158, 158, 0.7)"))  # Gris par défaut
         durations.append(stats["num_weeks"])
 
     # Créer la figure avec une présentation améliorée
@@ -696,7 +646,8 @@ def render_phase_timeline(
             x=[start_dates[i], end_dates[i]],
             y=[phase, phase],
             mode="markers",
-            marker=dict(color="white", size=10, line=dict(color=colors[i], width=2)),
+            marker=dict(color="white", size=10,
+                        line=dict(color=colors[i], width=2)),
             showlegend=False,
             hoverinfo="skip"
         ))

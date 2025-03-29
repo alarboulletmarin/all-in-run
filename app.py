@@ -2,6 +2,14 @@
 Application All-in-Run améliorée avec une interface responsive et une meilleure expérience utilisateur.
 Point d'entrée principal de l'application.
 """
+from controllers.simulation_controller import SimulationController
+from controllers.plan_controller import PlanController
+from controllers.input_controller import InputController
+from ui.pages.simulation_page import render_simulation_page
+from ui.pages.plan_view_page import render_plan_view_page
+from ui.pages.input_page import render_input_form
+from config.languages import DEFAULT_LANGUAGE
+from utils.i18n import i18n, _
 import streamlit as st
 import os
 import sys
@@ -11,18 +19,10 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
 # Maintenant utiliser des imports absolus plutôt que relatifs
-from utils.i18n import i18n, _
-from config.languages import DEFAULT_LANGUAGE
 
 # Importation des pages de l'interface (nouvelles versions améliorées)
-from ui.pages.input_page import render_input_form
-from ui.pages.plan_view_page import render_plan_view_page
-from ui.pages.simulation_page import render_simulation_page
 
 # Importation des contrôleurs
-from controllers.input_controller import InputController
-from controllers.plan_controller import PlanController
-from controllers.simulation_controller import SimulationController
 
 
 def render_language_selector():
@@ -36,7 +36,8 @@ def render_language_selector():
     lang_codes = [code for code, _ in AVAILABLE_LANGUAGES]
 
     # Trouver l'index de la langue courante
-    current_index = lang_codes.index(current_lang) if current_lang in lang_codes else 0
+    current_index = lang_codes.index(
+        current_lang) if current_lang in lang_codes else 0
 
     # Afficher le sélecteur de langue
     selected_lang_name = st.sidebar.selectbox(
@@ -95,88 +96,14 @@ def setup_page_config():
         initial_sidebar_state="expanded"
     )
 
-    # Ajouter du CSS personnalisé pour améliorer l'interface utilisateur
-    st.markdown("""
-    <style>
-    /* Styles généraux */
-    .main .block-container {
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
-    
-    /* Amélioration des titres */
-    h1, h2, h3 {
-        color: #2C3E50;
-        margin-bottom: 1.2rem;
-    }
-    
-    h1 {
-        border-bottom: 2px solid #3498DB;
-        padding-bottom: 0.5rem;
-    }
-    
-    /* Personnalisation des cartes et éléments */
-    .stAlert {
-        border-radius: 10px !important;
-        border: none !important;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) !important;
-    }
-    
-    /* Styles des formulaires */
-    .stButton > button {
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        font-weight: 500;
-        transition: all 0.2s;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Personnalisation des onglets */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 1rem;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        height: 4rem;
-        white-space: pre-wrap;
-        background-color: white;
-        border-radius: 4px 4px 0 0;
-        font-weight: 500;
-        border-left: 1px solid #f0f2f6;
-        border-right: 1px solid #f0f2f6;
-        border-top: 1px solid #f0f2f6;
-        border-bottom: none;
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background-color: white;
-        border-bottom: 4px solid #3498DB !important;
-    }
-    
-    /* Rendu mobile */
-    @media (max-width: 768px) {
-        .stTabs [data-baseweb="tab"] {
-            font-size: 0.8rem;
-            padding: 0.5rem;
-            height: 3rem;
-        }
-        
-        .stButton > button {
-            width: 100%;
-        }
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # Charger les styles CSS
+    from ui.utils.style_loader import load_all_css
+    load_all_css()
 
 
 def render_sidebar():
     """Affiche le contenu de la barre latérale"""
     # Logo et titre
-    # st.sidebar.image("https://via.placeholder.com/150x150?text=All-in-Run", width=130)
     st.sidebar.title("All in Run 🏃")
 
     # Sélection de langue
