@@ -8,8 +8,6 @@ from typing import Dict, Any, Optional, List, Union
 
 import streamlit as st
 
-from models.plan import TrainingPlan
-
 
 class StorageManager:
     """Gestionnaire de stockage local pour l'application"""
@@ -29,13 +27,16 @@ class StorageManager:
         if not self.use_session_state and not os.path.exists(self.storage_dir):
             os.makedirs(self.storage_dir)
 
-    def save_plan(self, plan: TrainingPlan) -> None:
+    def save_plan(self, plan) -> None:
         """
         Sauvegarde un plan d'entraînement
 
         Args:
             plan: Plan d'entraînement à sauvegarder
         """
+        # Import moved here to avoid circular import
+        from models.plan import TrainingPlan
+
         if self.use_session_state:
             # Utiliser st.session_state pour stocker le plan
             st.session_state["current_plan"] = plan
@@ -50,24 +51,29 @@ class StorageManager:
 
             # Sauvegarder également la référence au plan courant
             current_plan_ref = {"filename": filename}
-            current_plan_path = os.path.join(self.storage_dir, "current_plan.json")
+            current_plan_path = os.path.join(
+                self.storage_dir, "current_plan.json")
 
             with open(current_plan_path, 'w', encoding='utf-8') as f:
                 json.dump(current_plan_ref, f, indent=2)
 
-    def load_plan(self) -> Optional[TrainingPlan]:
+    def load_plan(self) -> Optional['TrainingPlan']:
         """
         Charge le plan d'entraînement courant
 
         Returns:
             Plan d'entraînement ou None si aucun plan n'est stocké
         """
+        # Import moved here to avoid circular import
+        from models.plan import TrainingPlan
+
         if self.use_session_state:
             # Récupérer le plan depuis st.session_state
             return st.session_state.get("current_plan")
         else:
             # Récupérer le plan depuis un fichier local
-            current_plan_path = os.path.join(self.storage_dir, "current_plan.json")
+            current_plan_path = os.path.join(
+                self.storage_dir, "current_plan.json")
 
             if not os.path.exists(current_plan_path):
                 return None
@@ -106,7 +112,8 @@ class StorageManager:
             st.session_state["user_preferences"] = preferences
         else:
             # Utiliser un fichier local pour stocker les préférences
-            preferences_path = os.path.join(self.storage_dir, "preferences.json")
+            preferences_path = os.path.join(
+                self.storage_dir, "preferences.json")
 
             with open(preferences_path, 'w', encoding='utf-8') as f:
                 json.dump(preferences, f, indent=2)
@@ -123,7 +130,8 @@ class StorageManager:
             return st.session_state.get("user_preferences", {})
         else:
             # Récupérer les préférences depuis un fichier local
-            preferences_path = os.path.join(self.storage_dir, "preferences.json")
+            preferences_path = os.path.join(
+                self.storage_dir, "preferences.json")
 
             if not os.path.exists(preferences_path):
                 return {}
@@ -189,7 +197,8 @@ class StorageManager:
                 return user_input
 
             except (json.JSONDecodeError, IOError) as e:
-                print(f"Erreur lors du chargement des entrées utilisateur: {e}")
+                print(
+                    f"Erreur lors du chargement des entrées utilisateur: {e}")
                 return {}
 
     def list_saved_plans(self) -> List[Dict[str, Any]]:
@@ -222,8 +231,10 @@ class StorageManager:
 
                     try:
                         # Extraire la date de création du nom de fichier
-                        created_at_str = filename[5:-5]  # Enlever "plan_" et ".json"
-                        created_at = datetime.strptime(created_at_str, "%Y%m%d_%H%M%S")
+                        # Enlever "plan_" et ".json"
+                        created_at_str = filename[5:-5]
+                        created_at = datetime.strptime(
+                            created_at_str, "%Y%m%d_%H%M%S")
 
                         # Charger juste les métadonnées du plan
                         with open(filepath, 'r', encoding='utf-8') as f:
@@ -241,12 +252,13 @@ class StorageManager:
                         })
 
                     except (json.JSONDecodeError, IOError, ValueError) as e:
-                        print(f"Erreur lors du chargement du plan {filename}: {e}")
+                        print(
+                            f"Erreur lors du chargement du plan {filename}: {e}")
 
             # Trier par date de création (plus récent en premier)
             return sorted(plans, key=lambda p: p["created_at"], reverse=True)
 
-    def load_plan_by_filename(self, filename: str) -> Optional[TrainingPlan]:
+    def load_plan_by_filename(self, filename: str) -> Optional['TrainingPlan']:
         """
         Charge un plan d'entraînement à partir de son nom de fichier
 
@@ -256,6 +268,9 @@ class StorageManager:
         Returns:
             Plan d'entraînement ou None si le fichier n'existe pas
         """
+        # Import moved here to avoid circular import
+        from models.plan import TrainingPlan
+
         if self.use_session_state:
             # Avec st.session_state, on ne peut charger que le plan courant
             return st.session_state.get("current_plan")
@@ -301,7 +316,8 @@ class StorageManager:
                 os.remove(filepath)
 
                 # Si c'est le plan courant, supprimer également la référence
-                current_plan_path = os.path.join(self.storage_dir, "current_plan.json")
+                current_plan_path = os.path.join(
+                    self.storage_dir, "current_plan.json")
 
                 if os.path.exists(current_plan_path):
                     try:
@@ -312,7 +328,8 @@ class StorageManager:
                             os.remove(current_plan_path)
 
                     except (json.JSONDecodeError, IOError) as e:
-                        print(f"Erreur lors de la vérification du plan courant: {e}")
+                        print(
+                            f"Erreur lors de la vérification du plan courant: {e}")
 
                 return True
 

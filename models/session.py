@@ -3,8 +3,8 @@ Modèle pour représenter une séance d'entraînement.
 """
 from dataclasses import dataclass, field
 from datetime import date, timedelta
-from enum import Enum, auto
-from typing import List, Dict, Any, Optional, Tuple
+from enum import Enum
+from typing import List, Dict, Any, Optional
 
 from utils import format_timedelta, format_pace
 
@@ -30,6 +30,7 @@ class SessionBlock:
     Représente un bloc d'entraînement au sein d'une séance
     (ex: échauffement, bloc actif, retour au calme)
     """
+
     def __init__(self, distance: float, pace: timedelta, description: str = ""):
         self.distance = distance
         self.pace = pace
@@ -92,7 +93,8 @@ class Session:
         """Calcule la durée totale de la séance, arrondie à la seconde"""
         if not self.blocks:
             return timedelta(0)
-        total_seconds = sum(block.duration.total_seconds() for block in self.blocks)
+        total_seconds = sum(block.duration.total_seconds()
+                            for block in self.blocks)
         return timedelta(seconds=round(total_seconds))  # Arrondi à la seconde
 
     def get_difficulty_score(self) -> float:
@@ -112,7 +114,8 @@ class Session:
         }
 
         # Score de base: distance * facteur de type
-        base_score = self.total_distance * type_factors.get(self.session_type, 1.0)
+        base_score = self.total_distance * \
+            type_factors.get(self.session_type, 1.0)
 
         # Ajustement en fonction de l'intensité (allure moyenne)
         if self.blocks:
@@ -146,7 +149,8 @@ class Session:
         session_date = date.fromisoformat(data["session_date"])
         session_type = SessionType(data["session_type"])
         phase = TrainingPhase(data["phase"])
-        blocks = [SessionBlock.from_dict(block) for block in data.get("blocks", [])]
+        blocks = [SessionBlock.from_dict(block)
+                  for block in data.get("blocks", [])]
 
         return cls(
             session_date=session_date,
@@ -221,7 +225,8 @@ class Session:
             # En phase spécifique: échauffement 25%, bloc actif 50%, retour au calme 25%
             warmup_distance = round(total_distance * 0.25, 1)
             active_distance = round(total_distance * 0.5, 1)
-            cooldown_distance = round(total_distance - warmup_distance - active_distance, 1)
+            cooldown_distance = round(
+                total_distance - warmup_distance - active_distance, 1)
 
             blocks = [
                 SessionBlock(
@@ -289,22 +294,26 @@ class Session:
         # Calcul des distances de chaque partie
         warmup_distance = round(total_distance * 0.25, 1)
         active_total_distance = round(total_distance * 0.5, 1)
-        cooldown_distance = round(total_distance - warmup_distance - active_total_distance, 1)
+        cooldown_distance = round(
+            total_distance - warmup_distance - active_total_distance, 1)
 
         # Calcul du nombre de répétitions nécessaires pour couvrir active_total_distance
         # Distance par minute à allure seuil
-        distance_per_min_threshold = 1000 / threshold_pace.total_seconds() * 60 / 1000  # km/min
+        distance_per_min_threshold = 1000 / threshold_pace.total_seconds() * 60 / \
+            1000  # km/min
         # Distance par minute à allure EF
         distance_per_min_ef = 1000 / ef_pace.total_seconds() * 60 / 1000  # km/min
 
         # Distance par répétition (x min seuil + x min EF)
-        distance_per_rep = interval_minutes * (distance_per_min_threshold + distance_per_min_ef)
+        distance_per_rep = interval_minutes * \
+            (distance_per_min_threshold + distance_per_min_ef)
 
         # Nombre de répétitions arrondi
         num_reps = max(1, round(active_total_distance / distance_per_rep))
 
         # Recalcul des distances exactes pour chaque répétition
-        threshold_distance_per_rep = round(interval_minutes * distance_per_min_threshold, 1)
+        threshold_distance_per_rep = round(
+            interval_minutes * distance_per_min_threshold, 1)
         ef_distance_per_rep = round(interval_minutes * distance_per_min_ef, 1)
 
         # Création des blocs
@@ -343,9 +352,12 @@ class Session:
         )
 
         # Calculer les temps approximatifs pour chaque phase
-        warmup_time = format_timedelta(timedelta(seconds=warmup_distance * ef_pace.total_seconds()), "ms")
-        interval_block_time = format_timedelta(timedelta(seconds=num_reps * 2 * interval_minutes * 60), "ms")
-        cooldown_time = format_timedelta(timedelta(seconds=cooldown_distance * ef_pace.total_seconds()), "ms")
+        warmup_time = format_timedelta(
+            timedelta(seconds=warmup_distance * ef_pace.total_seconds()), "ms")
+        interval_block_time = format_timedelta(
+            timedelta(seconds=num_reps * 2 * interval_minutes * 60), "ms")
+        cooldown_time = format_timedelta(
+            timedelta(seconds=cooldown_distance * ef_pace.total_seconds()), "ms")
 
         # Ajuster la description avec les informations de temps
         desc = description or (
