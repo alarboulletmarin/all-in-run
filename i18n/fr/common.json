@@ -8,7 +8,6 @@
   "generate": "Générer",
   "export": "Exporter",
   "import": "Importer",
-
   "monday": "Lundi",
   "tuesday": "Mardi",
   "wednesday": "Mercredi",
@@ -16,7 +15,6 @@
   "friday": "Vendredi",
   "saturday": "Samedi",
   "sunday": "Dimanche",
-
   "january": "Janvier",
   "february": "Février",
   "march": "Mars",
@@ -29,22 +27,17 @@
   "october": "Octobre",
   "november": "Novembre",
   "december": "Décembre",
-
   "hours": "Heures",
   "minutes": "Minutes",
   "seconds": "Secondes",
-
   "yes": "Oui",
   "no": "Non",
-
   "page_not_found": "Page non trouvée",
   "no_data_available": "Aucune donnée disponible",
-
   "kilometer": "kilomètre",
   "kilometers": "kilomètres",
   "km": "km",
   "min_per_km": "min/km",
-
   "week": "Semaine",
   "weeks": "Semaines",
   "day": "Jour",
@@ -55,9 +48,9 @@
   "add": "Ajouter",
   "delete": "Supprimer",
   "confirm": "Confirmer",
-  "generate_plan": "Générer mon plan", 
-  "create_plan" : "Créer un plan d'entraînement",
-  "view_plan" : "Voir le plan d'entraînement",
-  "simulate" : "Simuler un plan d'entraînement",
+  "generate_plan": "Générer mon plan",
+  "create_plan": "Créer un plan d'entraînement",
+  "view_plan": "Voir le plan d'entraînement",
+  "simulate": "Simuler un plan d'entraînement",
   "app_description": "Générez votre plan d'entraînement personnalisé avec All in Run"
 }

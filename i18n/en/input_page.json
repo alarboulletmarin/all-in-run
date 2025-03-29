@@ -8,17 +8,14 @@
   "start_date": "Start date (Monday)",
   "start_date_help": "Start date of your training plan (must be a Monday)",
   "race_date_help": "Date of your target race (must be a Sunday)",
-
   "min_weeks_warning": "Warning: The preparation must last at least {weeks} weeks.",
   "plan_duration": "Plan duration: {weeks} weeks",
-
   "user_paces": "Your current paces",
   "pace_5k": "5K pace (mm:ss/km)",
   "pace_10k": "10K pace (mm:ss/km)",
   "pace_half": "Half marathon pace (mm:ss/km)",
   "pace_marathon": "Marathon pace (mm:ss/km)",
   "pace_order_warning": "Warning: Paces must follow the order: 5K < 10K < Half < Marathon",
-
   "training_params": "Training parameters",
   "weekly_volume": "Weekly volume",
   "min_volume": "Minimum volume (km/week)",
@@ -26,19 +23,23 @@
   "volume_help": "Volume will gradually increase from minimum to maximum",
   "sessions_per_week": "Sessions per week",
   "sessions_per_week_help": "Between 3 and 7 sessions per week",
-
   "intermediate_races": "Intermediate races",
   "add_intermediate_race": "Add an intermediate race",
   "intermediate_race_date_help": "Date of the intermediate race (must be a Sunday)",
   "no_intermediate_races": "No intermediate races added",
   "delete_race": "Delete this race",
   "target_pace": "Target pace (mm:ss/km)",
-
   "generate_plan": "Generate my plan",
-  
   "add_new_race": "Add a new intermediate race",
   "existing_races": "Configured intermediate races",
   "race_added": "Intermediate race added successfully",
   "race_objective": "Race objective",
-  "race_impact_info": "Intermediate races influence your training plan by automatically adjusting the volume of affected weeks"
+  "race_impact_info": "Intermediate races influence your training plan by automatically adjusting the volume of affected weeks",
+  "main_info": "Main information",
+  "paces_settings": "Pace settings",
+  "paces_explanation": "Paces must follow the order: 5K < 10K < Half < Marathon (the longer the distance, the slower the pace).",
+  "paces_valid": "Your paces are consistent.",
+  "save_paces": "Save my paces",
+  "plan_generation_success": "Training plan successfully generated!",
+  "paces_saved": "Your paces have been successfully saved."
 }

@@ -8,17 +8,14 @@
   "start_date": "Date de début (lundi)",
   "start_date_help": "Date de début de votre plan d'entraînement (doit être un lundi)",
   "race_date_help": "Date de votre course cible (doit être un dimanche)",
-
   "min_weeks_warning": "Attention : La préparation doit durer au moins {weeks} semaines.",
   "plan_duration": "Durée du plan : {weeks} semaines",
-
   "user_paces": "Vos allures actuelles",
   "pace_5k": "Allure 5km (mm:ss/km)",
   "pace_10k": "Allure 10km (mm:ss/km)",
   "pace_half": "Allure semi-marathon (mm:ss/km)",
   "pace_marathon": "Allure marathon (mm:ss/km)",
   "pace_order_warning": "Attention : Les allures doivent respecter l'ordre : 5K < 10K < Semi < Marathon",
-
   "training_params": "Paramètres d'entraînement",
   "weekly_volume": "Volume hebdomadaire",
   "min_volume": "Volume minimal (km/semaine)",
@@ -26,19 +23,23 @@
   "volume_help": "Le volume augmentera progressivement du minimum au maximum",
   "sessions_per_week": "Nombre de séances par semaine",
   "sessions_per_week_help": "Entre 3 et 7 séances par semaine",
-
   "intermediate_races": "Courses intermédiaires",
   "add_intermediate_race": "Ajouter une course intermédiaire",
   "intermediate_race_date_help": "Date de la course intermédiaire (doit être un dimanche)",
   "no_intermediate_races": "Aucune course intermédiaire ajoutée",
   "delete_race": "Supprimer cette course",
   "target_pace": "Allure visée (mm:ss/km)",
-
   "generate_plan": "Générer mon plan",
-
   "add_new_race": "Ajouter une nouvelle course intermédiaire",
   "existing_races": "Courses intermédiaires configurées",
   "race_added": "Course intermédiaire ajoutée avec succès",
   "race_objective": "Objectif de la course",
-  "race_impact_info": "Les courses intermédiaires influencent votre plan d'entraînement en ajustant automatiquement le volume des semaines concernées"
+  "race_impact_info": "Les courses intermédiaires influencent votre plan d'entraînement en ajustant automatiquement le volume des semaines concernées",
+  "main_info": "Informations principales",
+  "paces_settings": "Réglage des allures",
+  "paces_explanation": "Les allures doivent respecter l'ordre: 5K < 10K < Semi < Marathon (plus la distance est longue, plus l'allure est lente).",
+  "paces_valid": "Vos allures sont cohérentes.",
+  "save_paces": "Enregistrer mes allures",
+  "plan_generation_success": "Plan d'entraînement généré avec succès!",
+  "paces_saved": "Vos allures ont été enregistrées avec succès."
 }

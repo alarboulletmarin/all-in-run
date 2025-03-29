@@ -4,43 +4,34 @@
   "no_scenarios_available": "No predefined scenarios available",
   "modified_parameters": "Modified parameters",
   "select_scenario": "Select this scenario",
-
   "custom_simulation": "Custom simulation",
   "no_plan_available": "No plan available for simulation",
   "no_plan_warning": "You must first generate a training plan before you can run simulations.",
   "back_to_plan": "Back to plan",
-
   "training_parameters": "Training parameters",
   "sessions_per_week": "Sessions per week",
   "min_volume": "Minimum volume (km)",
   "max_volume": "Maximum volume (km)",
-
   "dates": "Dates",
   "start_date": "Start date",
   "race_date": "Race date",
-
   "paces": "Paces",
   "pace_5k": "5K pace",
   "pace_10k": "10K pace",
   "pace_half": "Half marathon pace",
   "pace_marathon": "Marathon pace",
-
   "run_simulation": "Run simulation",
   "running_simulation": "Running simulation...",
   "simulation_success": "Simulation completed successfully",
-
   "comparison": "Comparison with original plan",
   "no_comparison_available": "No comparison available",
   "total_volume": "Total volume",
   "total_duration": "Total duration",
   "total_weeks": "Total weeks",
-
   "volume_comparison": "Volume comparison",
   "intensity_comparison": "Intensity comparison",
   "sessions_comparison": "Sessions comparison",
-
   "original": "Original",
   "simulated": "Simulated",
-
   "keep_simulation": "Keep this simulation as main plan"
 }

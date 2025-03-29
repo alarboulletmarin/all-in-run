@@ -8,7 +8,6 @@
   "generate": "Generar",
   "export": "Exportar",
   "import": "Importar",
-
   "monday": "Lunes",
   "tuesday": "Martes",
   "wednesday": "Miércoles",
@@ -16,7 +15,6 @@
   "friday": "Viernes",
   "saturday": "Sábado",
   "sunday": "Domingo",
-
   "january": "Enero",
   "february": "Febrero",
   "march": "Marzo",
@@ -29,22 +27,17 @@
   "october": "Octubre",
   "november": "Noviembre",
   "december": "Diciembre",
-
   "hours": "Horas",
   "minutes": "Minutos",
   "seconds": "Segundos",
-
   "yes": "Sí",
   "no": "No",
-
   "page_not_found": "Página no encontrada",
   "no_data_available": "No hay datos disponibles",
-
   "kilometer": "kilómetro",
   "kilometers": "kilómetros",
   "km": "km",
   "min_per_km": "min/km",
-
   "week": "Semana",
   "weeks": "Semanas",
   "day": "Día",
@@ -55,7 +48,7 @@
   "add": "Añadir",
   "delete": "Eliminar",
   "confirm": "Confirmar",
-  "generate_plan": "Generar mi plan", 
+  "generate_plan": "Generar mi plan",
   "create_plan": "Crear un plan de entrenamiento",
   "view_plan": "Ver plan de entrenamiento",
   "simulate": "Simular un plan de entrenamiento",
