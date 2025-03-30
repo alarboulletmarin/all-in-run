@@ -135,6 +135,63 @@ services:
 - **Volumes**: Personnalisez le stockage persistant avec `./data:/app/data`
 - **Variables d'environnement**: Configurez Streamlit avec des variables comme `STREAMLIT_THEME_PRIMARY_COLOR`
 
+## 🧪 Développement avec DevContainer
+
+### Qu'est-ce qu'un DevContainer ?
+
+Un DevContainer (conteneur de développement) est un environnement de développement préconfiguré qui s'exécute dans un conteneur Docker. Cette approche permet de :
+
+- Standardiser l'environnement de développement entre tous les contributeurs
+- Éviter les problèmes de "ça marche sur ma machine"
+- Intégrer facilement les nouveaux développeurs au projet
+- Isoler les dépendances du projet de votre système
+
+### Pourquoi utiliser un DevContainer pour All-in-Run ?
+
+- Garantit que tous les développeurs utilisent la même version de Python et des bibliothèques
+- Inclut tous les outils nécessaires préinstallés (linters, formatters, etc.)
+- Offre un environnement de test identique à la production
+- Simplifie la collaboration et le débogage
+
+### Comment utiliser le DevContainer
+
+#### Prérequis
+
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Extension Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- [Docker](https://www.docker.com/products/docker-desktop/)
+
+#### Démarrage
+
+1. Clonez le dépôt All-in-Run
+   ```bash
+   git clone https://github.com/votre-org/all-in-run.git
+   cd all-in-run
+   ```
+
+2. Ouvrez le projet dans VS Code
+   ```bash
+   code .
+   ```
+
+3. Lorsque VS Code détecte le fichier `.devcontainer`, il proposera de "Reopen in Container". Cliquez sur cette option.
+   - Alternativement : Ouvrez la palette de commandes (F1 ou Ctrl+Shift+P) et choisissez "Remote-Containers: Reopen in Container"
+
+4. VS Code construira et démarrera le conteneur de développement, puis ouvrira le projet dans ce conteneur. La première construction peut prendre quelques minutes.
+
+5. Une fois dans le conteneur, vous disposez d'un environnement complet avec :
+   - Python 3.9 préinstallé
+   - Toutes les dépendances du projet installées
+   - Configuration des linters et formatters
+   - Accès au terminal intégré dans le conteneur
+
+#### Personnalisation
+
+Si vous souhaitez personnaliser l'environnement de développement, vous pouvez modifier les fichiers dans le dossier `.devcontainer` :
+
+- `devcontainer.json` : Configuration de l'environnement VS Code
+- `Dockerfile` : Définition de l'image de conteneur
+
 ## 🛠️ Développement
 
 ### Environnement de développement
