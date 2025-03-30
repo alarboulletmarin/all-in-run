@@ -1,9 +1,6 @@
-"""
-Modèle pour les données utilisateur nécessaires à la génération du plan d'entraînement.
-"""
 from dataclasses import dataclass, field
 from datetime import date, timedelta
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from .course import Course, RaceType
 
 

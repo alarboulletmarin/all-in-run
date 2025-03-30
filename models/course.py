@@ -1,9 +1,6 @@
-"""
-Modèle pour représenter une course (principale ou intermédiaire).
-"""
 from dataclasses import dataclass
 from datetime import date, timedelta
-from enum import Enum, auto
+from enum import Enum
 from typing import Optional, Dict, Any
 
 

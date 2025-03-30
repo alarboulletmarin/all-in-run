@@ -1,6 +1,3 @@
-"""
-Modèle pour représenter une séance d'entraînement.
-"""
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from enum import Enum

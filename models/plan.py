@@ -1,6 +1,3 @@
-"""
-Modèle pour représenter un plan d'entraînement complet.
-"""
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Dict, List, Any, Optional, Tuple
