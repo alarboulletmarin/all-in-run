@@ -1,49 +1,46 @@
-"""
-Paramètres configurables pour l'application All-in-Run.
-"""
 import os
 from typing import Dict, Any
 import json
 
 
 class Settings:
-    """Gestion des paramètres de l'application"""
+    """Gestionnaire centralisé de configuration de l'application"""
 
     def __init__(self, config_file: str = None):
         """
-        Initialise les paramètres avec des valeurs par défaut
-
+        Initialise les paramètres avec des valeurs par défaut et charge une configuration externe si spécifiée
+        
         Args:
             config_file: Chemin vers un fichier de configuration JSON (optionnel)
         """
-        # Paramètres de l'interface utilisateur
+        # Configuration de l'interface utilisateur
         self.ui = {
-            "theme": "light",
-            "show_tips": True,
-            "display_mode": "calendar",  # 'calendar' ou 'list'
+            "theme": "light",             # Thème de l'application (light/dark)
+            "show_tips": True,            # Affichage des conseils utilisateur
+            "display_mode": "calendar",   # Mode d'affichage du plan (calendar/list)
         }
 
-        # Paramètres pour les exports
+        # Configuration des exports
         self.export = {
-            "ics_calendar_name": "All-in-Run",
-            "pdf_include_charts": True,
-            "pdf_include_stats": True,
+            "ics_calendar_name": "All-in-Run",  # Nom du calendrier pour export iCalendar
+            "pdf_include_charts": True,         # Inclusion des graphiques dans l'export PDF
+            "pdf_include_stats": True,          # Inclusion des statistiques dans l'export PDF
         }
 
-        # Paramètres de notification (pour version future)
+        # Configuration des notifications
         self.notifications = {
-            "enabled": False,
-            "reminder_days": 1,  # Nombre de jours avant la séance pour le rappel
+            "enabled": False,             # Activation du système de notifications
+            "reminder_days": 1,           # Jours d'anticipation pour les rappels
         }
 
-        # Si un fichier de configuration est fourni, charger les paramètres
+        # Charge la configuration depuis un fichier si spécifié et existant
         if config_file and os.path.exists(config_file):
             self.load_from_file(config_file)
 
     def load_from_file(self, config_file: str) -> None:
         """
-        Charge les paramètres depuis un fichier JSON
-
+        Charge les paramètres depuis un fichier JSON et met à jour la configuration
+        
         Args:
             config_file: Chemin vers le fichier de configuration
         """
@@ -51,7 +48,7 @@ class Settings:
             with open(config_file, 'r', encoding='utf-8') as f:
                 config_data = json.load(f)
 
-            # Mettre à jour les paramètres avec les valeurs du fichier
+            # Mise à jour sélective des sections de configuration
             if "ui" in config_data:
                 self.ui.update(config_data["ui"])
             if "export" in config_data:
@@ -60,15 +57,14 @@ class Settings:
                 self.notifications.update(config_data["notifications"])
 
         except (json.JSONDecodeError, IOError) as e:
-            # En cas d'erreur, utiliser les valeurs par défaut
             print(f"Erreur lors du chargement des paramètres: {e}")
 
     def save_to_file(self, config_file: str) -> None:
         """
-        Sauvegarde les paramètres dans un fichier JSON
-
+        Sauvegarde la configuration actuelle dans un fichier JSON
+        
         Args:
-            config_file: Chemin vers le fichier de configuration
+            config_file: Chemin vers le fichier de destination
         """
         config_data = {
             "ui": self.ui,
@@ -84,27 +80,30 @@ class Settings:
 
     def get_value(self, section: str, key: str, default: Any = None) -> Any:
         """
-        Récupère une valeur de paramètre
-
+        Récupère une valeur de paramètre avec gestion des valeurs par défaut
+        
         Args:
             section: Section du paramètre (ui, export, notifications)
-            key: Clé du paramètre
-            default: Valeur par défaut si le paramètre n'existe pas
-
+            key: Identifiant du paramètre
+            default: Valeur par défaut retournée si le paramètre n'est pas trouvé
+            
         Returns:
-            Valeur du paramètre ou valeur par défaut
+            La valeur du paramètre ou la valeur par défaut
         """
         section_dict = getattr(self, section, {})
         return section_dict.get(key, default)
 
     def set_value(self, section: str, key: str, value: Any) -> None:
         """
-        Définit une valeur de paramètre
-
+        Définit ou met à jour une valeur de paramètre
+        
         Args:
             section: Section du paramètre (ui, export, notifications)
-            key: Clé du paramètre
-            value: Nouvelle valeur
+            key: Identifiant du paramètre
+            value: Nouvelle valeur à définir
+            
+        Raises:
+            ValueError: Si la section spécifiée n'existe pas
         """
         if hasattr(self, section):
             section_dict = getattr(self, section)
@@ -114,10 +113,10 @@ class Settings:
 
     def to_dict(self) -> Dict[str, Dict[str, Any]]:
         """
-        Convertit les paramètres en dictionnaire
-
+        Exporte la configuration complète sous forme de dictionnaire
+        
         Returns:
-            Dictionnaire des paramètres
+            Dictionnaire complet des paramètres organisés par section
         """
         return {
             "ui": self.ui,
@@ -126,5 +125,5 @@ class Settings:
         }
 
 
-# Instance singleton des paramètres
+# Instance globale des paramètres pour l'application
 settings = Settings()

@@ -1,19 +1,16 @@
-"""
-Configuration des langues disponibles pour l'application All-in-Run.
-"""
 from typing import Dict, List, Tuple
 
-# Langues disponibles - Tuple (code, nom affiché)
+# Définition des langues supportées par l'application (code ISO, nom affiché)
 AVAILABLE_LANGUAGES: List[Tuple[str, str]] = [
     ("fr", "Français"),
     ("en", "English"),
     ("es", "Español")
 ]
 
-# Langue par défaut
+# Langue utilisée par défaut si aucune préférence utilisateur n'est définie
 DEFAULT_LANGUAGE = "fr"
 
-# Mappings des jours pour l'affichage dans différentes langues
+# Traduction des jours de la semaine (clé = indice du jour, 0 = Lundi)
 DAYS_TRANSLATIONS: Dict[str, Dict[int, str]] = {
     "fr": {
         0: "Lundi", 1: "Mardi", 2: "Mercredi", 3: "Jeudi",
@@ -29,7 +26,7 @@ DAYS_TRANSLATIONS: Dict[str, Dict[int, str]] = {
     }
 }
 
-# Mappings des mois pour l'affichage dans différentes langues
+# Traduction des mois de l'année (clé = numéro du mois, 1 = Janvier)
 MONTHS_TRANSLATIONS: Dict[str, Dict[int, str]] = {
     "fr": {
         1: "Janvier", 2: "Février", 3: "Mars", 4: "Avril", 5: "Mai", 6: "Juin",
@@ -45,7 +42,7 @@ MONTHS_TRANSLATIONS: Dict[str, Dict[int, str]] = {
     }
 }
 
-# Mappings des types de séances
+# Traduction des types d'entraînement selon le contexte de course
 SESSION_TYPE_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "fr": {
         "Sortie Longue": "Sortie Longue",
@@ -70,7 +67,7 @@ SESSION_TYPE_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     }
 }
 
-# Mappings des phases d'entraînement
+# Traduction des phases d'un plan d'entraînement
 PHASE_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "fr": {
         "Développement": "Développement",
@@ -89,7 +86,7 @@ PHASE_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     }
 }
 
-# Mappings des unités pour l'affichage dans différentes langues
+# Traduction des unités de mesure et termes liés au temps
 UNITS_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "fr": {
         "km": "km",
@@ -123,7 +120,7 @@ UNITS_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     }
 }
 
-# Mappings des messages d'erreur de validation
+# Messages d'erreur de validation pour les formulaires et saisies utilisateur
 VALIDATION_ERROR_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "fr": {
         "start_date_monday": "La date de début doit être un lundi.",
