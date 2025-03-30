@@ -1,6 +1,3 @@
-"""
-Contrôleur pour la gestion du plan d'entraînement.
-"""
 from datetime import date
 from typing import Dict, Any, Optional, Union, BinaryIO, List
 
@@ -13,7 +10,7 @@ from utils.storage import storage_manager
 
 
 class PlanController:
-    """Contrôleur pour la gestion du plan d'entraînement"""
+    """Contrôleur responsable de la gestion, génération, manipulation et export des plans d'entraînement"""
 
     def __init__(self):
         self.plan_generator = PlanGenerator()
@@ -23,39 +20,40 @@ class PlanController:
 
     def generate_plan(self, user_data: UserData) -> TrainingPlan:
         """
-        Génère un plan d'entraînement
+        Génère un plan d'entraînement personnalisé à partir des données utilisateur
 
         Args:
-            user_data: Données utilisateur
+            user_data: Données utilisateur incluant objectifs, profil et contraintes
 
         Returns:
-            Plan d'entraînement généré
+            Un plan d'entraînement complet adapté aux besoins de l'utilisateur
         """
-        # Vérifier si les données utilisateur ont changé pour forcer la régénération
+        # Vérifier si les données ont changé par rapport au plan existant
         force_regenerate = True
         if self.current_plan and hasattr(self.current_plan, 'user_data'):
             force_regenerate = not self._compare_user_data(self.current_plan.user_data, user_data)
         
-        # Générer le plan
+        # Générer un nouveau plan d'entraînement
         self.current_plan = self.plan_generator.generate_plan(user_data)
 
-        # Sauvegarder le plan dans le stockage local
+        # Persistance des données
         self._save_current_plan()
 
         return self.current_plan
         
     def _compare_user_data(self, old_data: UserData, new_data: UserData) -> bool:
         """
-        Compare deux objets UserData pour déterminer s'ils sont identiques
+        Compare deux objets UserData pour détecter des changements significatifs
         
         Args:
-            old_data: Anciennes données utilisateur
+            old_data: Données utilisateur précédentes
             new_data: Nouvelles données utilisateur
             
         Returns:
-            True si les données sont identiques, False sinon
+            True si les données sont essentiellement identiques, False si des changements
+            nécessitent une régénération du plan
         """
-        # Comparaison des attributs principaux
+        # Comparaison des dates et paramètres principaux
         if old_data.start_date != new_data.start_date:
             return False
         if old_data.main_race.race_date != new_data.main_race.race_date:
@@ -69,7 +67,7 @@ class PlanController:
         if old_data.max_volume != new_data.max_volume:
             return False
         
-        # Comparer les allures
+        # Comparaison des allures de référence
         if old_data.pace_5k != new_data.pace_5k:
             return False
         if old_data.pace_10k != new_data.pace_10k:
@@ -79,29 +77,28 @@ class PlanController:
         if old_data.pace_marathon != new_data.pace_marathon:
             return False
             
-        # Comparer les courses intermédiaires
+        # Vérification des courses intermédiaires
         if len(old_data.intermediate_races) != len(new_data.intermediate_races):
             return False
         
-        # Si on arrive ici, les données sont considérées comme identiques
         return True
 
     def load_plan(self) -> Optional[TrainingPlan]:
         """
-        Charge le plan d'entraînement depuis le stockage local
+        Charge le plan d'entraînement depuis le stockage persistant
 
         Returns:
-            Plan d'entraînement ou None si aucun plan n'est stocké
+            Le plan d'entraînement stocké ou None si aucun plan n'existe
         """
         self.current_plan = storage_manager.load_plan()
         return self.current_plan
 
     def get_current_plan(self) -> Optional[TrainingPlan]:
         """
-        Récupère le plan courant
+        Récupère le plan courant ou le charge depuis le stockage si nécessaire
 
         Returns:
-            Plan d'entraînement courant ou None
+            Le plan d'entraînement courant ou None si aucun plan n'est disponible
         """
         if self.current_plan is None:
             self.current_plan = self.load_plan()
@@ -110,14 +107,14 @@ class PlanController:
 
     def export_to_ics(self, lang: str = "fr", options: dict = None) -> Optional[bytes]:
         """
-        Exporte le plan courant au format ICS
+        Exporte le plan courant au format iCalendar (ICS) pour intégration avec les agendas
 
         Args:
-            lang: Code de langue
-            options: Options supplémentaires pour l'export
+            lang: Code de langue pour la localisation des descriptions
+            options: Options de personnalisation de l'export
 
         Returns:
-            Contenu du fichier ICS ou None si aucun plan n'est chargé
+            Contenu binaire du fichier ICS ou None si aucun plan n'est disponible
         """
         if self.current_plan is None:
             return None
@@ -126,18 +123,18 @@ class PlanController:
 
     def export_to_pdf(self, lang: str = "fr", options: dict = None) -> Optional[bytes]:
         """
-        Exporte le plan courant au format PDF
+        Exporte le plan courant au format PDF pour impression ou partage
 
         Args:
-            lang: Code de langue
-            options: Options supplémentaires pour l'export
-                - include_charts: Inclure les graphiques (bool)
-                - include_details: Inclure les détails (bool)
-                - paper_size: Taille du papier (str: "A4", "Letter", "Legal")
-                - orientation: Orientation (str: "portrait", "landscape")
+            lang: Code de langue pour la localisation du contenu
+            options: Options de personnalisation du PDF:
+                - include_charts: Affichage des graphiques d'analyse (bool)
+                - include_details: Inclusion des détails d'entraînement (bool)
+                - paper_size: Format du papier ("A4", "Letter", "Legal")
+                - orientation: Orientation de la page ("portrait", "landscape")
 
         Returns:
-            Contenu du fichier PDF ou None si aucun plan n'est chargé
+            Contenu binaire du PDF ou None si aucun plan n'est disponible
         """
         if self.current_plan is None:
             return None
@@ -146,10 +143,10 @@ class PlanController:
 
     def export_to_json(self) -> Optional[str]:
         """
-        Exporte le plan courant au format JSON
+        Exporte le plan courant au format JSON pour sauvegarde ou partage
 
         Returns:
-            Chaîne JSON ou None si aucun plan n'est chargé
+            Chaîne JSON représentant le plan ou None si aucun plan n'est disponible
         """
         if self.current_plan is None:
             return None
@@ -158,13 +155,13 @@ class PlanController:
 
     def export_to_tcx(self, lang: str = "fr") -> Optional[bytes]:
         """
-        Exporte le plan courant au format TCX (pour Garmin)
+        Exporte le plan courant au format TCX pour importation dans les appareils Garmin
 
         Args:
-            lang: Code de langue
+            lang: Code de langue pour la localisation des descriptions d'entraînement
 
         Returns:
-            Contenu du fichier TCX ou None si aucun plan n'est chargé
+            Contenu binaire du fichier TCX ou None si aucun plan n'est disponible
         """
         if self.current_plan is None:
             return None
@@ -173,13 +170,13 @@ class PlanController:
 
     def import_from_json(self, json_data: Union[str, BinaryIO]) -> Optional[TrainingPlan]:
         """
-        Importe un plan depuis des données JSON
+        Importe un plan d'entraînement depuis des données JSON
 
         Args:
-            json_data: Données JSON (chaîne ou fichier)
+            json_data: Données JSON sous forme de chaîne ou de fichier ouvert
 
         Returns:
-            Plan importé ou None en cas d'erreur
+            Le plan importé ou None en cas d'échec de l'importation
         """
         try:
             self.current_plan = self.import_service.import_from_json(json_data)
@@ -191,13 +188,15 @@ class PlanController:
 
     def adjust_to_current_date(self, current_date: Optional[date] = None) -> Optional[TrainingPlan]:
         """
-        Ajuste le plan courant à la date actuelle
+        Ajuste le plan d'entraînement en fonction de la date actuelle
+        Utile pour adapter un plan existant si l'utilisateur a manqué des séances
+        ou souhaite commencer le plan à une nouvelle date
 
         Args:
-            current_date: Date courante (si None, utilise la date du jour)
+            current_date: Date de référence pour l'ajustement (date du jour par défaut)
 
         Returns:
-            Plan ajusté ou None si aucun plan n'est chargé
+            Plan ajusté ou None si l'ajustement a échoué ou si aucun plan n'est chargé
         """
         if self.current_plan is None:
             return None
@@ -216,10 +215,11 @@ class PlanController:
 
     def get_plan_summary(self) -> Dict[str, Any]:
         """
-        Récupère un résumé du plan courant
+        Produit un résumé synthétique du plan d'entraînement actuel
+        Utile pour l'affichage dans les tableaux de bord ou écrans récapitulatifs
 
         Returns:
-            Dictionnaire contenant les informations résumées du plan
+            Dictionnaire structuré contenant les métriques clés du plan
         """
         if self.current_plan is None:
             return {}
@@ -258,13 +258,13 @@ class PlanController:
 
     def get_week_sessions(self, week_num: int) -> List[Dict[str, Any]]:
         """
-        Récupère les séances d'une semaine spécifique
+        Récupère les détails des séances d'une semaine spécifique du plan
 
         Args:
-            week_num: Numéro de la semaine (0-indexed)
+            week_num: Numéro de la semaine (0 pour la première semaine)
 
         Returns:
-            Liste des séances de la semaine
+            Liste des séances d'entraînement de la semaine avec leurs détails
         """
         if self.current_plan is None:
             return []
@@ -307,13 +307,13 @@ class PlanController:
 
     def get_week_summary(self, week_num: int) -> Dict[str, Any]:
         """
-        Récupère un résumé d'une semaine spécifique
+        Génère un résumé des métriques d'une semaine spécifique du plan
 
         Args:
-            week_num: Numéro de la semaine (0-indexed)
+            week_num: Numéro de la semaine (0 pour la première semaine)
 
         Returns:
-            Dictionnaire contenant les informations résumées de la semaine
+            Dictionnaire contenant les statistiques et informations clés de la semaine
         """
         if self.current_plan is None:
             return {}
@@ -352,6 +352,9 @@ class PlanController:
         }
 
     def _save_current_plan(self) -> None:
-        """Sauvegarde le plan courant dans le stockage local"""
+        """
+        Sauvegarde le plan courant dans le stockage persistant
+        Cette méthode privée est appelée automatiquement après chaque modification du plan
+        """
         if self.current_plan:
             storage_manager.save_plan(self.current_plan)

@@ -1,19 +1,17 @@
-"""
-Contrôleur pour la simulation de plans d'entraînement alternatifs.
-"""
-from datetime import date, timedelta
-from typing import Dict, Any, List, Optional, Tuple
+from datetime import timedelta
+from typing import Dict, Any, List, Optional
 
 from models.plan import TrainingPlan
 from models.user_data import UserData
-from models.course import Course, RaceType
+from models.course import Course
 from services.plan_generator import PlanGenerator
-from utils.pace_calculator import estimate_race_pace, get_equivalent_paces
-from utils.time_converter import parse_pace_string, parse_time_string
 
 
 class SimulationController:
-    """Contrôleur pour la simulation de plans d'entraînement alternatifs"""
+    """
+    Contrôleur responsable de la simulation de plans d'entraînement alternatifs.
+    Permet de comparer différents scénarios et ajustements de paramètres.
+    """
 
     def __init__(self):
         self.plan_generator = PlanGenerator()
@@ -23,22 +21,22 @@ class SimulationController:
     def simulate_plan(self, user_data: UserData,
                       simulation_params: Dict[str, Any]) -> TrainingPlan:
         """
-        Simule un plan d'entraînement avec des paramètres modifiés
+        Génère un plan d'entraînement simulé à partir de paramètres modifiés.
 
         Args:
-            user_data: Données utilisateur d'origine
-            simulation_params: Paramètres modifiés pour la simulation
+            user_data: Données utilisateur de référence
+            simulation_params: Paramètres à modifier pour cette simulation
 
         Returns:
-            Plan d'entraînement simulé
+            Plan d'entraînement simulé avec les paramètres modifiés
         """
-        # Enregistrer les données utilisateur d'origine
+        # Conserver les données originales pour comparaison ultérieure
         self.original_user_data = user_data
 
-        # Créer une copie modifiée des données utilisateur
+        # Appliquer les modifications demandées aux données utilisateur
         modified_user_data = self._apply_simulation_params(user_data, simulation_params)
 
-        # Générer le plan simulé
+        # Générer le plan avec les paramètres modifiés
         self.current_simulation = self.plan_generator.generate_plan(modified_user_data)
 
         return self.current_simulation
@@ -46,18 +44,18 @@ class SimulationController:
     def compare_plans(self, original_plan: TrainingPlan,
                       simulated_plan: TrainingPlan) -> Dict[str, Any]:
         """
-        Compare deux plans d'entraînement
+        Analyse et compare deux plans d'entraînement en détail.
 
         Args:
-            original_plan: Plan d'entraînement original
-            simulated_plan: Plan d'entraînement simulé
+            original_plan: Plan d'entraînement de référence
+            simulated_plan: Plan d'entraînement simulé à comparer
 
         Returns:
-            Dictionnaire contenant les différences entre les plans
+            Analyse comparative détaillée des deux plans (volumes, durées, types de séances, etc.)
         """
         comparison = {}
 
-        # Comparer les volumes totaux
+        # Analyse comparative des volumes totaux
         original_volume = original_plan.get_total_volume()
         simulated_volume = simulated_plan.get_total_volume()
         volume_diff = simulated_volume - original_volume
@@ -70,7 +68,7 @@ class SimulationController:
             "difference_percent": volume_diff_percent
         }
 
-        # Comparer les durées totales
+        # Analyse comparative des durées d'entraînement
         original_duration = original_plan.get_total_duration()
         simulated_duration = simulated_plan.get_total_duration()
         duration_diff = simulated_duration - original_duration
@@ -82,7 +80,7 @@ class SimulationController:
             "difference": duration_diff
         }
 
-        # Comparer les séances par type
+        # Analyse comparative de la distribution des types de séances
         original_types = self._count_session_types(original_plan)
         simulated_types = self._count_session_types(simulated_plan)
 
@@ -91,13 +89,13 @@ class SimulationController:
             "simulated": simulated_types
         }
 
-        # Comparer les volumes hebdomadaires
+        # Analyse comparative des volumes hebdomadaires
         comparison["weekly_volumes"] = {
             "original": original_plan.weekly_volumes,
             "simulated": simulated_plan.weekly_volumes
         }
 
-        # Comparer les phases
+        # Analyse comparative des phases d'entraînement
         original_phase_stats = original_plan.get_phase_stats()
         simulated_phase_stats = simulated_plan.get_phase_stats()
 
@@ -122,17 +120,17 @@ class SimulationController:
 
     def get_simulation_scenarios(self, user_data: UserData) -> List[Dict[str, Any]]:
         """
-        Génère des scénarios de simulation prédéfinis
+        Génère une liste de scénarios de simulation prédéfinis adaptés au profil de l'utilisateur.
 
         Args:
-            user_data: Données utilisateur d'origine
+            user_data: Données utilisateur pour lesquelles générer des scénarios
 
         Returns:
-            Liste de scénarios de simulation
+            Liste de scénarios de simulation avec leurs paramètres associés
         """
         scenarios = []
 
-        # Scénario 1: Augmenter le nombre de séances par semaine
+        # Scénario: Augmentation de la fréquence d'entraînement
         if user_data.sessions_per_week < 7:
             scenarios.append({
                 "name": f"Augmenter à {user_data.sessions_per_week + 1} séances par semaine",
@@ -142,7 +140,7 @@ class SimulationController:
                 }
             })
 
-        # Scénario 2: Diminuer le nombre de séances par semaine
+        # Scénario: Diminution de la fréquence d'entraînement
         if user_data.sessions_per_week > 3:
             scenarios.append({
                 "name": f"Réduire à {user_data.sessions_per_week - 1} séances par semaine",
@@ -152,7 +150,7 @@ class SimulationController:
                 }
             })
 
-        # Scénario 3: Augmenter le volume hebdomadaire
+        # Scénario: Augmentation du volume hebdomadaire
         max_volume_increase = user_data.max_volume * 1.2
         min_volume_increase = user_data.min_volume * 1.2
 
@@ -165,7 +163,7 @@ class SimulationController:
             }
         })
 
-        # Scénario 4: Diminuer le volume hebdomadaire
+        # Scénario: Diminution du volume hebdomadaire
         max_volume_decrease = user_data.max_volume * 0.8
         min_volume_decrease = user_data.min_volume * 0.8
 
@@ -178,11 +176,11 @@ class SimulationController:
             }
         })
 
-        # Scénario 5: Décaler la date de début (plus tôt si possible)
+        # Scénario: Démarrage du plan plus tardif
         current_weeks = (user_data.main_race.race_date - user_data.start_date).days // 7
 
-        if current_weeks > 16:  # Si on peut commencer plus tard
-            later_start = user_data.start_date + timedelta(days=28)  # 4 semaines plus tard
+        if current_weeks > 16:
+            later_start = user_data.start_date + timedelta(days=28)
             scenarios.append({
                 "name": "Commencer 4 semaines plus tard",
                 "description": "Raccourcir la période de préparation",
@@ -191,7 +189,7 @@ class SimulationController:
                 }
             })
 
-        # Scénario 6: Allures plus rapides
+        # Scénario: Allures plus rapides (plus intense)
         faster_paces = {
             "pace_5k": user_data.pace_5k - timedelta(seconds=10),
             "pace_10k": user_data.pace_10k - timedelta(seconds=8),
@@ -205,7 +203,7 @@ class SimulationController:
             "params": faster_paces
         })
 
-        # Scénario 7: Allures plus lentes
+        # Scénario: Allures plus lentes (moins intense)
         slower_paces = {
             "pace_5k": user_data.pace_5k + timedelta(seconds=10),
             "pace_10k": user_data.pace_10k + timedelta(seconds=8),
@@ -223,26 +221,26 @@ class SimulationController:
 
     def get_current_simulation(self) -> Optional[TrainingPlan]:
         """
-        Récupère la simulation courante
+        Récupère la simulation de plan en cours.
 
         Returns:
-            Plan d'entraînement simulé ou None
+            Le plan d'entraînement simulé ou None si aucune simulation n'existe
         """
         return self.current_simulation
 
     def _apply_simulation_params(self, user_data: UserData,
                                  simulation_params: Dict[str, Any]) -> UserData:
         """
-        Applique les paramètres de simulation aux données utilisateur
+        Applique les paramètres de simulation aux données utilisateur pour créer un profil modifié.
 
         Args:
-            user_data: Données utilisateur d'origine
-            simulation_params: Paramètres modifiés pour la simulation
+            user_data: Données utilisateur originales
+            simulation_params: Paramètres de simulation à appliquer
 
         Returns:
-            Données utilisateur modifiées
+            Données utilisateur modifiées selon les paramètres spécifiés
         """
-        # Créer une copie modifiée de la course principale
+        # Traitement de la course principale
         main_race_params = simulation_params.get("main_race", {})
         main_race = Course(
             race_date=main_race_params.get("race_date", user_data.main_race.race_date),
@@ -253,14 +251,12 @@ class SimulationController:
             is_main_race=True
         )
 
-        # Créer des copies modifiées des courses intermédiaires
+        # Traitement des courses intermédiaires (modification ou ajout)
         intermediate_races = []
         for race in user_data.intermediate_races:
-            # Vérifier si cette course est modifiée dans les paramètres
             modified = False
             for race_params in simulation_params.get("intermediate_races", []):
                 if race_params.get("race_date") == race.race_date:
-                    # Cette course est modifiée
                     new_race = Course(
                         race_date=race_params.get("race_date", race.race_date),
                         race_type=race_params.get("race_type", race.race_type),
@@ -273,13 +269,11 @@ class SimulationController:
                     break
 
             if not modified:
-                # Cette course n'est pas modifiée, la garder telle quelle
                 intermediate_races.append(race)
 
-        # Ajouter les nouvelles courses intermédiaires
+        # Ajout de nouvelles courses intermédiaires
         for race_params in simulation_params.get("intermediate_races", []):
             if not any(race.race_date == race_params.get("race_date") for race in user_data.intermediate_races):
-                # Nouvelle course intermédiaire
                 new_race = Course(
                     race_date=race_params["race_date"],
                     race_type=race_params["race_type"],
@@ -289,7 +283,7 @@ class SimulationController:
                 )
                 intermediate_races.append(new_race)
 
-        # Créer l'objet UserData modifié
+        # Construction du profil utilisateur modifié
         modified_user_data = UserData(
             start_date=simulation_params.get("start_date", user_data.start_date),
             main_race=main_race,
@@ -307,13 +301,13 @@ class SimulationController:
 
     def _count_session_types(self, plan: TrainingPlan) -> Dict[str, int]:
         """
-        Compte le nombre de séances par type
+        Analyse la distribution des types de séances dans un plan.
 
         Args:
-            plan: Plan d'entraînement
+            plan: Plan d'entraînement à analyser
 
         Returns:
-            Dictionnaire avec les types de séance comme clés et les nombres comme valeurs
+            Dictionnaire comptabilisant chaque type de séance
         """
         type_counts = {}
 
