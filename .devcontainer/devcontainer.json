@@ -1,20 +1,14 @@
 {
   "name": "All-in-Run Dev Environment",
-  "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bullseye",
+  
   "customizations": {
-    "codespaces": {
-      "openFiles": [
-        "README.md",
-        "app.py"
-      ]
-    },
     "vscode": {
       "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": true,
         "python.formatting.provider": "black",
-        "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.organizeImports": true
@@ -34,43 +28,41 @@
         "ms-python.flake8",
         "ms-python.isort",
         "matangover.mypy",
-        "njpwerner.autodocstring",
-        "github.copilot",
-        "streetsidesoftware.code-spell-checker",
-        "eamodio.gitlens"
+        "github.copilot"
       ]
     }
   },
+  
   "features": {
-    "ghcr.io/devcontainers/features/python:1": {
-      "installTools": true,
-      "version": "3.11"
-    },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": false
-    },
     "ghcr.io/devcontainers-contrib/features/poetry:2": {
       "version": "latest"
     }
   },
-  "updateContentCommand": "pip install -e . && poetry install --with dev",
-  "postCreateCommand": "echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.bashrc && pip install pre-commit && pre-commit install",
+  
+  "initializeCommand": "echo 'Préparation de l'environnement...'",
+  
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  
   "postAttachCommand": {
     "server": "streamlit run app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
+  
   "portsAttributes": {
     "8501": {
       "label": "Application Streamlit",
       "onAutoForward": "openPreview"
     }
   },
-  "forwardPorts": [
-    8501
-  ],
+  
+  "forwardPorts": [8501],
   "remoteUser": "vscode",
+  
   "containerEnv": {
     "PYTHONPATH": "${containerWorkspaceFolder}",
     "PYTHONDONTWRITEBYTECODE": "1"
-  }
+  },
+  
+  "mounts": [
+    "source=poetry-cache,target=/home/vscode/.cache/pypoetry,type=volume"
+  ]
 }
