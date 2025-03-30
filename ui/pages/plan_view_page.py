@@ -1,6 +1,3 @@
-"""
-Page d'affichage du plan d'entraînement.
-"""
 import base64
 import hashlib
 import io

@@ -1,6 +1,3 @@
-"""
-Page de simulation de plans d'entraînement alternatifs.
-"""
 import streamlit as st
 from datetime import timedelta
 

@@ -1,6 +1,3 @@
-"""
-Package ui - Interface utilisateur pour l'application All-in-Run.
-"""
 from .pages import render_input_form, render_plan_view_page, render_simulation_page
 from .components import (
     # Forms

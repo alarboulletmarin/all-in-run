@@ -1,5 +1,5 @@
 import streamlit as st
-from typing import List, Callable, Dict, Any, Union, Optional
+from typing import List, Callable, Dict, Any, Optional
 
 def responsive_columns(ratios: List[int] = None, gap: str = "small", mobile_breakpoint: int = 768) -> List[st.container]:
     """

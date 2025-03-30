@@ -1,6 +1,3 @@
-"""
-Page de saisie des données utilisateur.
-"""
 import streamlit as st
 from datetime import date, timedelta
 
