@@ -1,6 +1,3 @@
-"""
-Service de calcul des phases d'entraînement.
-"""
 from datetime import date, timedelta
 from typing import Dict, List, Tuple
 

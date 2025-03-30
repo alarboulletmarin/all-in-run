@@ -1,13 +1,9 @@
-"""
-Service de génération du plan d'entraînement.
-"""
-from datetime import date, timedelta
-from typing import Dict, List, Optional
+from datetime import date
+from typing import Dict
 
 from models.plan import TrainingPlan
 from models.user_data import UserData
 from models.session import Session, TrainingPhase
-from models.course import Course
 from .phase_calculator import PhaseCalculator
 from .volume_calculator import VolumeCalculator
 from .session_distributor import SessionDistributor

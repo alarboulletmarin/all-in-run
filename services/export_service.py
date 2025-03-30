@@ -1,6 +1,3 @@
-"""
-Service d'exportation du plan d'entraînement.
-"""
 import io
 import uuid
 from datetime import datetime, timedelta

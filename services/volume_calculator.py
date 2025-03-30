@@ -1,8 +1,5 @@
-"""
-Service de calcul des volumes hebdomadaires.
-"""
 from datetime import date, timedelta
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List
 
 from models.course import Course
 from models.session import TrainingPhase
@@ -12,7 +9,6 @@ from config.constants import (
     DISCHARGE_REDUCTION,
     TAPER_FINAL_WEEK_RATIO
 )
-
 
 class VolumeCalculator:
     """Calcule les volumes hebdomadaires selon les règles définies"""

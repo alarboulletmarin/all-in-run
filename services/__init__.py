@@ -1,6 +1,3 @@
-"""
-Package services - Services métier pour l'application All-in-Run.
-"""
 from .phase_calculator import PhaseCalculator
 from .volume_calculator import VolumeCalculator
 from .session_distributor import SessionDistributor

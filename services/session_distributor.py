@@ -1,12 +1,9 @@
-"""
-Service de distribution des séances d'entraînement.
-"""
 from datetime import date, timedelta
 from typing import Dict, List, Tuple, Optional, Set
 import random
 
 from models.course import Course
-from models.session import Session, SessionType, TrainingPhase, SessionBlock
+from models.session import Session, TrainingPhase
 from config.constants import (
     DEFAULT_LONG_RUN_DAY,
     DEFAULT_THRESHOLD_DAY,
@@ -16,8 +13,6 @@ from config.constants import (
     EF_VOLUME_RATIO,
     THRESHOLD_INTERVAL_MINUTES
 )
-from utils.date_utils import get_date_from_week_and_day, get_week_number
-
 
 class SessionDistributor:
     """Distribue les séances d'entraînement selon les règles définies"""

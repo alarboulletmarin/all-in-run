@@ -1,9 +1,6 @@
-"""
-Service d'importation du plan d'entraînement.
-"""
 import json
 from datetime import date
-from typing import Dict, Any, Optional, Union, TextIO, BinaryIO
+from typing import Optional, Union, TextIO
 
 from models.plan import TrainingPlan
 
