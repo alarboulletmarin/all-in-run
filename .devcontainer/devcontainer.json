@@ -39,7 +39,7 @@
     }
   },
   
-  "initializeCommand": "echo 'Préparation de l'environnement...'",
+  "initializeCommand": "echo \"Préparation de l'environnement...\"",
   
   "postCreateCommand": "bash .devcontainer/setup.sh",
   
