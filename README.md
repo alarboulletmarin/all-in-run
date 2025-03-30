@@ -7,7 +7,7 @@
 
 **All-in-Run** est une application web de génération de plans d'entraînement personnalisés pour coureurs. Elle permet de créer un plan adapté à vos objectifs, de visualiser votre progression et d'exporter votre planning vers différentes plateformes.
 
-![All-in-Run Demo](docs/images/demo.gif)
+![All-in-Run Demo](/images/demo.gif)
 
 ## ✨ Fonctionnalités
 
