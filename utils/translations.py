@@ -1,6 +1,3 @@
-"""
-Utility module for handling translations in the application.
-"""
 import gettext
 
 # Set up the translation function

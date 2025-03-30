@@ -1,6 +1,3 @@
-"""
-Gestionnaire d'internationalisation pour l'application.
-"""
 import json
 import os
 from typing import Dict, Any, Optional
@@ -63,7 +60,72 @@ class I18n:
             if not os.path.exists(common_file):
                 default_common = {
                     "app_title": "All-in-Run",
-                    "app_subtitle": "Generate your training plan" if lang_code == "en" else "Générez votre plan d'entraînement" if lang_code == "fr" else "Genera tu plan de entrenamiento"
+                    "app_subtitle": "Generate your training plan" if lang_code == "en" else "Générez votre plan d'entraînement" if lang_code == "fr" else "Genera tu plan de entrenamiento",
+                    # Ajout des instructions d'importation ICS pour les différentes langues
+                    "ics_import_steps": """
+                    ## How to import your training plan into your calendar
+
+                    1. Download the ICS file using the link above
+                    2. For Google Calendar:
+                       - Open Google Calendar
+                       - Click on the "+" button next to "Other calendars"
+                       - Select "Import"
+                       - Upload the downloaded ICS file
+                       - Click "Import"
+                    3. For Apple Calendar:
+                       - Open Calendar app
+                       - Select "File" > "Import"
+                       - Choose the downloaded ICS file
+                       - Click "Import"
+                    4. For Outlook:
+                       - Open Outlook
+                       - Go to Calendar view
+                       - Select "File" > "Import & Export" > "Import an iCalendar (.ics)"
+                       - Browse to the downloaded file
+                       - Click "Open"
+                    """ if lang_code == "en" else """
+                    ## Comment importer votre plan d'entraînement dans votre calendrier
+
+                    1. Téléchargez le fichier ICS via le lien ci-dessus
+                    2. Pour Google Agenda :
+                       - Ouvrez Google Agenda
+                       - Cliquez sur le bouton "+" à côté de "Autres agendas"
+                       - Sélectionnez "Importer"
+                       - Téléchargez le fichier ICS téléchargé
+                       - Cliquez sur "Importer"
+                    3. Pour Apple Calendrier :
+                       - Ouvrez l'application Calendrier
+                       - Sélectionnez "Fichier" > "Importer"
+                       - Choisissez le fichier ICS téléchargé
+                       - Cliquez sur "Importer"
+                    4. Pour Outlook :
+                       - Ouvrez Outlook
+                       - Allez à la vue Calendrier
+                       - Sélectionnez "Fichier" > "Importer et exporter" > "Importer un iCalendar (.ics)"
+                       - Naviguez jusqu'au fichier téléchargé
+                       - Cliquez sur "Ouvrir"
+                    """ if lang_code == "fr" else """
+                    ## Cómo importar su plan de entrenamiento a su calendario
+
+                    1. Descargue el archivo ICS usando el enlace de arriba
+                    2. Para Google Calendar:
+                       - Abra Google Calendar
+                       - Haga clic en el botón "+" junto a "Otros calendarios"
+                       - Seleccione "Importar"
+                       - Suba el archivo ICS descargado
+                       - Haga clic en "Importar"
+                    3. Para Apple Calendar:
+                       - Abra la aplicación Calendario
+                       - Seleccione "Archivo" > "Importar"
+                       - Elija el archivo ICS descargado
+                       - Haga clic en "Importar"
+                    4. Para Outlook:
+                       - Abra Outlook
+                       - Vaya a la vista Calendario
+                       - Seleccione "Archivo" > "Importar y Exportar" > "Importar un iCalendar (.ics)"
+                       - Navegue hasta el archivo descargado
+                       - Haga clic en "Abrir"
+                    """
                 }
 
                 with open(common_file, 'w', encoding='utf-8') as f:

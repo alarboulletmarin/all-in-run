@@ -1,8 +1,5 @@
-"""
-Utilitaires pour la conversion des temps et formats.
-"""
 from datetime import timedelta
-from typing import Tuple, Optional, Union
+from typing import Optional, Union
 import re
 
 

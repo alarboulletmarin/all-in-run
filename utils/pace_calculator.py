@@ -1,8 +1,5 @@
-"""
-Utilitaires pour le calcul des allures.
-"""
 from datetime import timedelta
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional
 
 from models.course import RaceType
 

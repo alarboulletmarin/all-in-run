@@ -1,7 +1,4 @@
-"""
-Utilitaires pour la gestion des dates.
-"""
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import List, Tuple, Optional, Generator
 from config.languages import DAYS_TRANSLATIONS, MONTHS_TRANSLATIONS
 

@@ -1,9 +1,5 @@
-"""
-Validateurs pour les données utilisateur.
-"""
 from datetime import date, timedelta
 from typing import Tuple, Dict, Any, List, Optional, Union
-import re
 
 from config.constants import MIN_WEEKS_BEFORE_RACE, MIN_SESSIONS_PER_WEEK, MAX_SESSIONS_PER_WEEK
 from config.languages import VALIDATION_ERROR_TRANSLATIONS

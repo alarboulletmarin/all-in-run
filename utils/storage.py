@@ -1,10 +1,7 @@
-"""
-Gestion du stockage local pour l'application.
-"""
 import json
 import os
 from datetime import datetime
-from typing import Dict, Any, Optional, List, Union
+from typing import Dict, Any, Optional, List
 
 import streamlit as st
 

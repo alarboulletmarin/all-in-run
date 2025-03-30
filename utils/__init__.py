@@ -1,6 +1,3 @@
-"""
-Package utils - Utilitaires pour l'application All-in-Run.
-"""
 from .date_utils import *
 from .time_converter import *
 from .pace_calculator import *
