@@ -48,7 +48,14 @@ class ExportService:
             "include_rest_days": False,
             "reminder_time": 30,
             "start_time": 18,
-            "ics_calendar_name": "Training Plan"
+            "ics_calendar_name": "Training Plan",
+            "colors": {
+                "rest": "#f5f5f5",
+                "long_run": "#e3f2fd",
+                "threshold": "#fff3e0",
+                "ef": "#e8f5e9",
+                "race": "#ffebee"
+            }
         }
         
         # Fusionner avec les options fournies
@@ -123,6 +130,13 @@ class ExportService:
 
             # Emplacement (optionnel, mais peut améliorer l'expérience)
             event.location = "Course à pied"
+
+            # Couleur de l'événement
+            session_type = session.session_type.value.lower()
+            if session_type in options["colors"]:
+                event.extra.append(
+                    ContentLine(name="X-APPLE-CALENDAR-COLOR", value=options["colors"][session_type])
+                )
 
             # Ajouter l'événement au calendrier
             calendar.events.add(event)

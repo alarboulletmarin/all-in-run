@@ -32,7 +32,11 @@ class I18n:
                 "session_types": {},
                 "phases": {},
                 "race_types": {},
-                "intensity": {}
+                "intensity": {},
+                "export": {
+                    "export_title": "Export" if lang_code == "fr" else "Export" if lang_code == "en" else "Exportar",
+                    "export_description": "Exportez votre plan d'entraînement" if lang_code == "fr" else "Export your training plan" if lang_code == "en" else "Exporta tu plan de entrenamiento"
+                }
             }
 
         # Essayer de charger les traductions disponibles
@@ -123,9 +127,19 @@ class I18n:
                        - Abra Outlook
                        - Vaya a la vista Calendario
                        - Seleccione "Archivo" > "Importar y Exportar" > "Importar un iCalendar (.ics)"
-                       - Navegue hasta el archivo descargado
+                       - Navegue hasta el archivo
                        - Haga clic en "Abrir"
-                    """
+                    """,
+                    
+                    # Nouvelles traductions pour l'export ICS
+                    "day_0": "Lundi" if lang_code == "fr" else "Monday" if lang_code == "en" else "Lunes",
+                    "day_1": "Mardi" if lang_code == "fr" else "Tuesday" if lang_code == "en" else "Martes",
+                    "day_2": "Mercredi" if lang_code == "fr" else "Wednesday" if lang_code == "en" else "Miércoles",
+                    "day_3": "Jeudi" if lang_code == "fr" else "Thursday" if lang_code == "en" else "Jueves",
+                    "day_4": "Vendredi" if lang_code == "fr" else "Friday" if lang_code == "en" else "Viernes",
+                    "day_5": "Samedi" if lang_code == "fr" else "Saturday" if lang_code == "en" else "Sábado",
+                    "day_6": "Dimanche" if lang_code == "fr" else "Sunday" if lang_code == "en" else "Domingo",
+                    "rest_day": "Jour de repos" if lang_code == "fr" else "Rest day" if lang_code == "en" else "Día de descanso"
                 }
 
                 with open(common_file, 'w', encoding='utf-8') as f:
