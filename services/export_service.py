@@ -140,17 +140,6 @@ class ExportService:
             ContentLine(name="X-WR-TIMEZONE", value="Europe/Paris")
         )
         
-        # Ajouter des propriétés spécifiques à iOS
-        calendar.extra.append(
-            ContentLine(name="X-APPLE-CALENDAR-COLOR", value="#FF0000")
-        )
-        calendar.extra.append(
-            ContentLine(name="X-APPLE-LOCAL-DEFAULT-ALARM", value="PT30M")
-        )
-        calendar.extra.append(
-            ContentLine(name="X-APPLE-STRUCTURED-LOCATION", value=";;;")
-        )
-        
         ics_content = calendar.serialize()
 
         # Convertir en bytes avec l'encodage UTF-8 explicite

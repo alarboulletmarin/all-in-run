@@ -45,22 +45,8 @@ def handle_export_ics(plan_controller: PlanController):
     if ics_data:
         # Créer un lien de téléchargement
         b64 = base64.b64encode(ics_data).decode()
-        filename = f"plan_entrainement_{options['ics_calendar_name'].replace(' ', '_')}.ics"
-        href = f'<a href="data:text/calendar;charset=utf-8;base64,{b64}" download="{filename}" class="download-link" target="_blank">{translate("download_ics", "plan_page")}</a>'
-
-        st.success(translate("ics_export_success", "plan_page"))
+        href = f'<a href="data:text/calendar;charset=utf-8;base64,{b64}" download="training_plan.ics">{translate("download_ics", "plan_page")}</a>'
         st.markdown(href, unsafe_allow_html=True)
-
-        with st.expander(translate("ics_import_instructions", "plan_page")):
-            st.markdown(translate("ics_import_steps", "plan_page"))
-            st.markdown("""
-            ### Instructions spécifiques pour iPhone :
-            1. Téléchargez le fichier ICS
-            2. Appuyez sur le fichier téléchargé
-            3. Sélectionnez "Ouvrir dans Calendrier"
-            4. Appuyez sur "Ajouter tous les événements"
-            5. Les événements seront ajoutés à votre calendrier par défaut
-            """)
 
 
 def handle_export_tcx(plan_controller: PlanController):
@@ -550,7 +536,7 @@ def render_export_view(plan_controller):
                     # Créer un lien de téléchargement
                     b64 = base64.b64encode(ics_data).decode()
                     filename = f"plan_entrainement_{calendar_name.replace(' ', '_')}.ics"
-                    href = f'<a href="data:text/calendar;charset=utf-8;base64,{b64}" download="{filename}" class="download-link" target="_blank">{translate("download_ics", "plan_page")}</a>'
+                    href = f'<a href="data:text/calendar;charset=utf-8;base64,{b64}" download="{filename}" class="download-link">{translate("download_ics", "plan_page")}</a>'
 
                     st.success(translate("ics_export_success", "plan_page"))
                     st.markdown(href, unsafe_allow_html=True)
@@ -558,14 +544,6 @@ def render_export_view(plan_controller):
                     # Ajouter des instructions sur comment l'importer
                     with st.expander(translate("ics_import_instructions", "plan_page")):
                         st.markdown(translate("ics_import_steps", "plan_page"))
-                        st.markdown("""
-                        ### Instructions spécifiques pour iPhone :
-                        1. Téléchargez le fichier ICS
-                        2. Appuyez sur le fichier téléchargé
-                        3. Sélectionnez "Ouvrir dans Calendrier"
-                        4. Appuyez sur "Ajouter tous les événements"
-                        5. Les événements seront ajoutés à votre calendrier par défaut
-                        """)
                 else:
                     st.error(translate("export_error", "plan_page"))
 
